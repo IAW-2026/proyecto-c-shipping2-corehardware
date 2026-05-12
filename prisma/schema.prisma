@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Operador {
+  id               String   @id @default(uuid())
+  clerk_user_id    String   @unique
+  dni              String
+  cuil_cuit        String
+  apellido         String
+  nombre           String
+  sexo             String
+  direccion        String
+  mail             String
+  celular          String
+  fecha_nacimiento DateTime
+  nacionalidad     String
+  is_deleted       Boolean  @default(false)
+  envios           Envio[]
+}
+
+model Envio {
+  id                String   @id @default(uuid())
+  pedido_id         Int
+  operador_id       String?
+  operador          Operador? @relation(fields: [operador_id], references: [id])
+  fecha_de_entrega  DateTime?
+  estado            String   @default("PENDIENTE")
+  monto             Float
+  direccion         String
+}
