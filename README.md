@@ -7,4 +7,14 @@ Esta app corresponde al módulo de envíos y logística en el proyecto de tipo *
 
 ---
 
+**Dependencias**:
+- **Framework**: Next.js
+- **Autenticación**: Clerk
+- **Estilos**: Tailwind
+- **ORM**: Prisma
+- **Base de datos**: PostgreSQL (Neon)
+- **Deploy**: Vercel
+
+---
+
 Enunciado completo: <https://iaw-2026.github.io/proyecto/>
