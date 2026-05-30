@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const ESTADOS_VALIDOS = [
   "PENDIENTE",
-  "ASIGNADO", 
+  "ASIGNADO",
   "RETIRADO",
   "EN_CAMINO",
   "ENTREGADO",
@@ -11,8 +11,9 @@ const ESTADOS_VALIDOS = [
 
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await context.params;
   const { estado } = await req.json();
 
   if (!ESTADOS_VALIDOS.includes(estado)) {
@@ -23,7 +24,7 @@ export async function PUT(
   }
 
   const envio = await prisma.envio.update({
-    where: { id: params.id },
+    where: { id },
     data: { estado },
   });
 

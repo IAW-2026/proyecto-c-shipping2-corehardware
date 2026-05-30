@@ -1,13 +1,18 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+function verificarApiKey(req: NextRequest) {
+  const apiKey = req.headers.get("X-API-Key");
+  return apiKey === process.env.SHIPPING_API_KEY;
+}
+
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
-  const apiKey = req.headers.get("X-API-Key");
-
-  if (apiKey !== process.env.SHIPPING_API_KEY) {
+  const { id } = await context.params;
+  
+  if (!verificarApiKey(req)) {
     return NextResponse.json(
       { message: "Unauthorized" },
       { status: 401 }
@@ -15,7 +20,7 @@ export async function GET(
   }
 
   const envio = await prisma.envio.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: { operador: true },
   });
 

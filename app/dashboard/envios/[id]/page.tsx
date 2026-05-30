@@ -3,12 +3,14 @@ import { notFound } from "next/navigation";
 import ActualizarEstado from "./ActualizarEstado";
 
 interface Props {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function EnvioDetailPage({ params }: Props) {
+  const { id } = await params;
+  
   const envio = await prisma.envio.findUnique({
-    where: { id: params.id },
+    where: { id },
     include: { operador: true },
   });
 

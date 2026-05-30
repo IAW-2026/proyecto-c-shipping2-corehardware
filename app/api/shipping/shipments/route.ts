@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
   }
 
   const body = await req.json();
-  const { orden_id, comprador_id, vendedor_id, direccion_origen, direccion_destino, monto } = body;
+  const { orden_id, comprador_id, vendedor_id, direccion_destino, monto } = body;
 
   if (!orden_id || !comprador_id || !vendedor_id || !direccion_destino || !monto) {
     return NextResponse.json(
