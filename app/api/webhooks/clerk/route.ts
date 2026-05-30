@@ -23,41 +23,47 @@ export async function POST(req: Request) {
   const body = JSON.stringify(payload);
 
   const wh = new Webhook(WEBHOOK_SECRET);
-  let evt: any;
+  let evt: { type: string; data: Record<string, unknown> };
 
   try {
     evt = wh.verify(body, {
-      "svix-id": svix_id,
-      "svix-timestamp": svix_timestamp,
-      "svix-signature": svix_signature,
-    });
+     "svix-id": svix_id,
+     "svix-timestamp": svix_timestamp,
+     "svix-signature": svix_signature,
+     }) as { type: string; data: Record<string, unknown> };
   } catch {
     return NextResponse.json({ message: "Invalid signature" }, { status: 400 });
   }
 
   if (evt.type === "user.created") {
-    const { id, email_addresses, first_name, last_name } = evt.data;
-    const role = evt.data.public_metadata?.role;
+  const data = evt.data as {
+    id: string;
+    email_addresses: { email_address: string }[];
+    first_name: string;
+    last_name: string;
+    public_metadata: Record<string, unknown>;
+  };
 
-    if (role === "logistics") {
-      await prisma.operador.create({
-        data: {
-          clerk_user_id: id,
-          nombre: first_name || "",
-          apellido: last_name || "",
-          mail: email_addresses[0]?.email_address || "",
-          dni: "",
-          cuil_cuit: "",
-          sexo: "",
-          direccion: "",
-          celular: "",
-          fecha_nacimiento: new Date(),
-          nacionalidad: "",
-          is_deleted: false,
-        },
-      });
-    }
+  const role = data.public_metadata?.role;
+
+  if (role === "logistics") {
+    await prisma.operador.create({
+      data: {
+        clerk_user_id: data.id,
+        nombre: data.first_name || "",
+        apellido: data.last_name || "",
+        mail: data.email_addresses[0]?.email_address || "",
+        dni: "",
+        cuil_cuit: "",
+        sexo: "",
+        direccion: "",
+        celular: "",
+        fecha_nacimiento: new Date(),
+        nacionalidad: "",
+        is_deleted: false,
+      },
+    });
   }
-
+}
   return NextResponse.json({ message: "OK" }, { status: 200 });
 }
