@@ -3,6 +3,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 const isPublicRoute = createRouteMatcher([
   "/",           // página de tracking pública
   "/api/shipment(.*)", // endpoints para otras apps
+  "/api/tracking(.*)"
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
