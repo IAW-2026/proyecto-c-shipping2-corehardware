@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { notificarEnvioCreado } from "@/lib/mocks";
 
 export async function POST(req: NextRequest) {
   const apiKey = req.headers.get("X-API-Key");
@@ -29,6 +30,8 @@ export async function POST(req: NextRequest) {
       monto,
     },
   });
+
+  await notificarEnvioCreado(orden_id, envio.id);
 
   return NextResponse.json(envio, { status: 201 });
 }
