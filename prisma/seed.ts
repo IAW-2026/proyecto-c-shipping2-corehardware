@@ -40,6 +40,74 @@ async function main() {
     },
   });
 
+  const op3 = await prisma.operador.create({
+    data: {
+      clerk_user_id: "user_seed_003",
+      dni: "28333444",
+      cuil_cuit: "20-28333444-5",
+      apellido: "López",
+      nombre: "Roberto",
+      sexo: "M",
+      direccion: "Calle Chiclana 123, Bahía Blanca",
+      mail: "roberto.lopez@corehardware.com",
+      celular: "291-4333444",
+      fecha_nacimiento: new Date("1988-03-10"),
+      nacionalidad: "Argentina",
+      is_deleted: false,
+    },
+  });
+
+  const op4 = await prisma.operador.create({
+    data: {
+      clerk_user_id: "user_seed_004",
+      dni: "35666777",
+      cuil_cuit: "27-35666777-3",
+      apellido: "Fernández",
+      nombre: "Ana",
+      sexo: "F",
+      direccion: "Av. Alem 567, Bahía Blanca",
+      mail: "ana.fernandez@corehardware.com",
+      celular: "291-4666777",
+      fecha_nacimiento: new Date("1997-11-25"),
+      nacionalidad: "Argentina",
+      is_deleted: false,
+    },
+  });
+
+  const op5 = await prisma.operador.create({
+    data: {
+      clerk_user_id: "user_seed_005",
+      dni: "31888999",
+      cuil_cuit: "20-31888999-7",
+      apellido: "Rodríguez",
+      nombre: "Diego",
+      sexo: "M",
+      direccion: "Calle Brown 890, Bahía Blanca",
+      mail: "diego.rodriguez@corehardware.com",
+      celular: "291-4888999",
+      fecha_nacimiento: new Date("1993-07-15"),
+      nacionalidad: "Argentina",
+      is_deleted: false,
+    },
+  });
+
+  const op6 = await prisma.operador.create({
+    data: {
+      clerk_user_id: "user_seed_006",
+      dni: "33111222",
+      cuil_cuit: "20-33111222-8",
+      apellido: "Sánchez",
+      nombre: "María",
+      sexo: "F",
+      direccion: "Av. Colón 789, Bahía Blanca",
+      mail: "maria.sanchez@corehardware.com",
+      celular: "291-4111333",
+      fecha_nacimiento: new Date("1991-04-20"),
+      nacionalidad: "Argentina",
+      is_deleted: false,
+    },
+  });
+
   // Crear envíos
   await prisma.envio.createMany({
     data: [
