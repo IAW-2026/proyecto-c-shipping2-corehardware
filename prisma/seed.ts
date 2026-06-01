@@ -3,6 +3,8 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+  await prisma.envio.deleteMany();
+  await prisma.operador.deleteMany();
   // Crear operadores
   const op1 = await prisma.operador.create({
     data: {
@@ -80,6 +82,54 @@ async function main() {
         direccion: "Av. Fortín 321, Bahía Blanca",
         monto: 31000,
         fecha_de_entrega: new Date("2026-06-04"),
+      },
+      {
+        pedido_id: 1006,
+        operador_id: op1.id,
+        estado: "PENDIENTE",
+        direccion: "Calle Moreno 123, Bahía Blanca",
+        monto: 12000,
+        fecha_de_entrega: new Date("2026-06-05"),
+      },
+      {
+        pedido_id: 1007,
+        operador_id: op2.id,
+        estado: "EN_CAMINO",
+        direccion: "Av. Alem 456, Bahía Blanca",
+        monto: 9500,
+        fecha_de_entrega: new Date("2026-06-06"),
+      },
+      {
+        pedido_id: 1008,
+        operador_id: null,
+        estado: "PENDIENTE",
+        direccion: "Calle Darregueira 789, Bahía Blanca",
+        monto: 7800,
+        fecha_de_entrega: new Date("2026-06-07"),
+      },
+      {
+        pedido_id: 1009,
+        operador_id: op1.id,
+        estado: "ENTREGADO",
+        direccion: "Av. Colón 321, Bahía Blanca",
+        monto: 45000,
+        fecha_de_entrega: new Date("2026-05-28"),
+      },
+      {
+        pedido_id: 1010,
+        operador_id: op2.id,
+        estado: "ASIGNADO",
+        direccion: "Calle Brown 654, Bahía Blanca",
+        monto: 18000,
+        fecha_de_entrega: new Date("2026-06-08"),
+      },
+      {
+        pedido_id: 1011,
+        operador_id: op1.id,
+        estado: "RETIRADO",
+        direccion: "Av. Cerri 987, Bahía Blanca",
+        monto: 33000,
+        fecha_de_entrega: new Date("2026-06-09"),
       },
     ],
   });
