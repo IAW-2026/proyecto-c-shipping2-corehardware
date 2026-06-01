@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import ActualizarEstado from "./ActualizarEstado";
+import MapaWrapper from "./MapaWrapper";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -20,6 +21,7 @@ export default async function EnvioDetailPage({ params }: Props) {
     <main className="p-8">
       <h1 className="text-2xl font-bold">Detalle del Envío</h1>
 
+      {/* Detalles del envío */}
       <div className="mt-4 space-y-2">
         <p><span className="font-semibold">ID:</span> {envio.id}</p>
         <p><span className="font-semibold">Pedido ID:</span> {envio.pedido_id}</p>
@@ -37,7 +39,17 @@ export default async function EnvioDetailPage({ params }: Props) {
           {envio.operador ? `${envio.operador.nombre} ${envio.operador.apellido}` : "Sin asignar"}
         </p>
       </div>
+      
+      {/* Mapa */}
+      <div className="mt-6">
+        <h2 className="text-xl font-semibold mb-3">Ruta del envío</h2>
+        <MapaWrapper
+          origen={envio.operador?.direccion || "Bahía Blanca"}
+          destino={envio.direccion}
+        />
+      </div>
 
+      {/* Actualizar estado */}
       <div className="mt-8">
         <ActualizarEstado envioId={envio.id} estadoActual={envio.estado} />
       </div>

@@ -51,3 +51,15 @@ export async function notificarEnvioCreado(ordenId: number, envioId: string) {
   console.log(`[MOCK] Notificando a Buyer App: orden ${ordenId} → envío ${envioId}`);
   return { success: true };
 }
+
+export async function actualizarEstadoPedido(ordenId: number, estado: string) {
+  // Etapa 3: reemplazar por fetch real
+  // await fetch(`${process.env.BUYER_APP_URL}/api/orders/${ordenId}/status`, {
+  //   method: "PUT",
+  //   headers: { "X-API-Key": process.env.BUYER_API_KEY!, "Content-Type": "application/json" },
+  //   body: JSON.stringify({ estado }),
+  // });
+
+  console.log(`[MOCK] Actualizando estado pedido ${ordenId} → ${estado}`);
+  return { success: true };
+}
