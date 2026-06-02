@@ -12,14 +12,6 @@ const ESTADO_LABELS: Record<string, string> = {
   ENTREGADO: "Entregado",
 };
 
-const ESTADO_COLORS: Record<string, string> = {
-  PENDIENTE: "text-yellow-400",
-  ASIGNADO: "text-blue-400",
-  RETIRADO: "text-orange-400",
-  EN_CAMINO: "text-purple-400",
-  ENTREGADO: "text-green-400",
-};
-
 interface Envio {
   id: string;
   pedido_id: number;
@@ -64,12 +56,12 @@ export default function TrackingSearch() {
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleBuscar()}
           placeholder="Ingresá el ID de tu envío..."
-          className="flex-1 bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500"
+          className="flex-1 bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-3 focus:outline-none focus:border-cyan-500 placeholder-gray-500"
         />
         <button
           onClick={handleBuscar}
           disabled={loading}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold disabled:opacity-50 transition"
+          className="bg-cyan-500 hover:bg-cyan-400 text-gray-950 px-6 py-3 rounded-lg font-semibold disabled:opacity-50 transition"
         >
           {loading ? "..." : "Buscar"}
         </button>
@@ -80,27 +72,27 @@ export default function TrackingSearch() {
       )}
 
       {envio && (
-        <div className="bg-gray-800 rounded-xl p-6 space-y-6 border border-gray-700">
+        <div className="bg-gray-900 rounded-xl p-6 space-y-6 border border-gray-700">
           <div>
             <p className="text-gray-400 text-sm">ID del envío</p>
-            <p className="text-white font-mono text-sm">{envio.id}</p>
+            <p className="text-cyan-400 font-mono text-sm">{envio.id}</p>
           </div>
 
           <div>
-            <p className="text-gray-400 text-sm mb-3">Estado del envío</p>
-            <div className="flex items-center justify-between">
+            <p className="text-gray-400 text-sm mb-3">Progreso del envío</p>
+            <div className="flex items-start justify-between mb-2">
               {ESTADOS.map((estado, index) => (
-                <div key={estado} className="flex flex-col items-center gap-1">
+                <div key={estado} className="flex flex-col items-center gap-1 flex-1">
                   <div
-                    className={`w-4 h-4 rounded-full border-2 ${
+                    className={`w-4 h-4 rounded-full border-2 transition-all ${
                       index <= estadoIndex
-                        ? "bg-blue-500 border-blue-500"
-                        : "bg-gray-700 border-gray-600"
+                        ? "bg-cyan-500 border-cyan-500"
+                        : "bg-gray-800 border-gray-600"
                     }`}
                   />
-                  <span className={`text-xs ${
+                  <span className={`text-xs text-center ${
                     index === estadoIndex
-                      ? ESTADO_COLORS[estado]
+                      ? "text-cyan-400 font-semibold"
                       : index < estadoIndex
                       ? "text-gray-400"
                       : "text-gray-600"
@@ -110,16 +102,16 @@ export default function TrackingSearch() {
                 </div>
               ))}
             </div>
-            <div className="relative mt-2">
+            <div className="relative mt-1">
               <div className="h-1 bg-gray-700 rounded" />
               <div
-                className="h-1 bg-blue-500 rounded absolute top-0 left-0 transition-all"
+                className="h-1 bg-cyan-500 rounded absolute top-0 left-0 transition-all"
                 style={{ width: `${(estadoIndex / (ESTADOS.length - 1)) * 100}%` }}
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 pt-2">
             <div>
               <p className="text-gray-400 text-sm">Dirección</p>
               <p className="text-white">{envio.direccion}</p>

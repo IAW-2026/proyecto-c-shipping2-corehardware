@@ -37,7 +37,9 @@ export default async function AdminOperadoresPage({ searchParams }: Props) {
 
   return (
     <main className="p-8">
-      <h1 className="text-2xl font-bold mb-6">Admin — Operadores</h1>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-white">Admin — Operadores</h1>
+      </div>
 
       <NuevoOperadorForm />
 
@@ -48,16 +50,16 @@ export default async function AdminOperadoresPage({ searchParams }: Props) {
           name="buscar"
           defaultValue={buscar}
           placeholder="Buscar por nombre, apellido o email..."
-          className="flex-1 bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
+          className="flex-1 bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-cyan-500 placeholder-gray-500"
         />
         <button
           type="submit"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-semibold transition"
+          className="bg-cyan-500 hover:bg-cyan-400 text-gray-950 px-6 py-2 rounded-lg font-semibold transition"
         >
           Buscar
         </button>
         {buscar && (
-          <a
+          
             href="/admin/operadores"
             className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition"
           >
@@ -70,43 +72,49 @@ export default async function AdminOperadoresPage({ searchParams }: Props) {
       {operadores.length === 0 ? (
         <p className="text-gray-400">No se encontraron operadores.</p>
       ) : (
-        <table className="w-full border-collapse">
-          <thead>
-            <tr className="bg-gray-800 text-left text-gray-300">
-              <th className="p-3 border border-gray-700">Nombre</th>
-              <th className="p-3 border border-gray-700">Email</th>
-              <th className="p-3 border border-gray-700">Celular</th>
-              <th className="p-3 border border-gray-700">Estado</th>
-              <th className="p-3 border border-gray-700">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {operadores.map((op) => (
-              <tr key={op.id} className="text-gray-300 hover:bg-gray-800 transition">
-                <td className="p-3 border border-gray-700">{op.apellido}, {op.nombre}</td>
-                <td className="p-3 border border-gray-700">{op.mail}</td>
-                <td className="p-3 border border-gray-700">{op.celular}</td>
-                <td className="p-3 border border-gray-700">
-                  {op.is_deleted ? "❌ Inactivo" : "✅ Activo"}
-                </td>
-                <td className="p-3 border border-gray-700">
-                  <AccionesOperador id={op.id} isDeleted={op.is_deleted} />
-                </td>
+        <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gray-800 text-left text-gray-400 text-sm uppercase tracking-wider">
+                <th className="px-6 py-3">Nombre</th>
+                <th className="px-6 py-3">Email</th>
+                <th className="px-6 py-3">Celular</th>
+                <th className="px-6 py-3">Estado</th>
+                <th className="px-6 py-3">Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-gray-800">
+              {operadores.map((op) => (
+                <tr key={op.id} className="hover:bg-gray-800 transition text-gray-300">
+                  <td className="px-6 py-4">{op.apellido}, {op.nombre}</td>
+                  <td className="px-6 py-4">{op.mail}</td>
+                  <td className="px-6 py-4">{op.celular}</td>
+                  <td className="px-6 py-4">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      op.is_deleted ? "bg-red-900 text-red-400" : "bg-green-900 text-green-400"
+                    }`}>
+                      {op.is_deleted ? "Inactivo" : "Activo"}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    <AccionesOperador id={op.id} isDeleted={op.is_deleted} />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
 
       {/* Paginación */}
       {totalPaginas > 1 && (
         <div className="flex gap-2 mt-6">
           {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((p) => (
-            <a
+            
               key={p}
               href={`/admin/operadores?${buscar ? `buscar=${buscar}&` : ""}page=${p}`}
               className={`px-4 py-2 rounded-lg text-sm font-medium border transition ${
-                pagina === p ? "bg-blue-600 text-white border-blue-600" : "border-gray-600 text-gray-400 hover:text-white"
+                pagina === p ? "bg-cyan-500 text-gray-950 border-cyan-500" : "border-gray-700 text-gray-400 hover:text-white"
               }`}
             >
               {p}

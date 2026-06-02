@@ -3,6 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const { userId } = await auth();
 
@@ -15,8 +17,8 @@ export default async function DashboardPage() {
   if (!operador) {
     return (
       <main className="p-8">
-        <h1 className="text-2xl font-bold">Panel del Operador</h1>
-        <p className="mt-4 text-red-500">
+        <h1 className="text-2xl font-bold text-white">Panel del Operador</h1>
+        <p className="mt-4 text-red-400">
           Tu usuario no está registrado como operador.
         </p>
       </main>
@@ -30,48 +32,67 @@ export default async function DashboardPage() {
 
   return (
     <main className="p-8">
-      <h1 className="text-2xl font-bold">Panel del Operador</h1>
-      <p className="mt-2 text-gray-500">Bienvenido, {operador.nombre}</p>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-white">Panel del Operador</h1>
+        <p className="mt-1 text-cyan-400">Bienvenido, {operador.nombre} {operador.apellido}</p>
+      </div>
 
-      <h2 className="mt-6 text-xl font-semibold">Mis envíos</h2>
+      <div className="bg-gray-900 rounded-xl border border-gray-800 overflow-hidden">
+        <div className="px-6 py-4 border-b border-gray-800">
+          <h2 className="text-lg font-semibold text-white">Mis envíos</h2>
+          <p className="text-sm text-gray-400">{envios.length} envío{envios.length !== 1 ? "s" : ""} asignado{envios.length !== 1 ? "s" : ""}</p>
+        </div>
 
-      {envios.length === 0 ? (
-        <p className="mt-4 text-gray-400">No tenés envíos asignados.</p>
-      ) : (
-        <table className="mt-4 w-full border-collapse">
-          <thead>
-            <tr className="bg-gray-800 text-left text-gray-300">
-              <th className="p-3 border border-gray-700">ID</th>
-              <th className="p-3 border border-gray-700">Pedido</th>
-              <th className="p-3 border border-gray-700">Estado</th>
-              <th className="p-3 border border-gray-700">Dirección</th>
-              <th className="p-3 border border-gray-700">Entrega estimada</th>
-            </tr>
-          </thead>
-          <tbody>
-            {envios.map((envio) => (
-              <tr key={envio.id} className="text-gray-300 hover:bg-gray-800 transition">
-                <td className="p-3 border border-gray-700">
-                  <Link
-                    href={`/dashboard/envios/${envio.id}`}
-                    className="text-blue-400 hover:text-blue-300 underline"
-                  >
-                    {envio.id.slice(0, 8)}...
-                  </Link>
-                </td>
-                <td className="p-3 border border-gray-700">{envio.pedido_id}</td>
-                <td className="p-3 border border-gray-700">{envio.estado}</td>
-                <td className="p-3 border border-gray-700">{envio.direccion}</td>
-                <td className="p-3 border border-gray-700">
-                  {envio.fecha_de_entrega
-                    ? new Date(envio.fecha_de_entrega).toLocaleDateString()
-                    : "-"}
-                </td>
+        {envios.length === 0 ? (
+          <div className="p-8 text-center">
+            <p className="text-gray-400">No tenés envíos asignados.</p>
+          </div>
+        ) : (
+          <table className="w-full">
+            <thead>
+              <tr className="bg-gray-800 text-left text-gray-400 text-sm uppercase tracking-wider">
+                <th className="px-6 py-3">ID</th>
+                <th className="px-6 py-3">Pedido</th>
+                <th className="px-6 py-3">Estado</th>
+                <th className="px-6 py-3">Dirección</th>
+                <th className="px-6 py-3">Entrega estimada</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody className="divide-y divide-gray-800">
+              {envios.map((envio) => (
+                <tr key={envio.id} className="hover:bg-gray-800 transition text-gray-300">
+                  <td className="px-6 py-4">
+                    <Link
+                      href={`/dashboard/envios/${envio.id}`}
+                      className="text-cyan-400 hover:text-cyan-300 underline font-mono text-sm"
+                    >
+                      {envio.id.slice(0, 8)}...
+                    </Link>
+                  </td>
+                  <td className="px-6 py-4">#{envio.pedido_id}</td>
+                  <td className="px-6 py-4">
+                    <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      envio.estado === "ENTREGADO" ? "bg-green-900 text-green-400" :
+                      envio.estado === "EN_CAMINO" ? "bg-blue-900 text-blue-400" :
+                      envio.estado === "RETIRADO" ? "bg-orange-900 text-orange-400" :
+                      envio.estado === "ASIGNADO" ? "bg-cyan-900 text-cyan-400" :
+                      "bg-gray-800 text-gray-400"
+                    }`}>
+                      {envio.estado}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4">{envio.direccion}</td>
+                  <td className="px-6 py-4">
+                    {envio.fecha_de_entrega
+                      ? new Date(envio.fecha_de_entrega).toLocaleDateString()
+                      : "-"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </main>
   );
 }

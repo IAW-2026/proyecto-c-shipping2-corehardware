@@ -14,19 +14,23 @@ export default function Navbar() {
   ];
 
   return (
-    <nav className="bg-gray-900 border-b border-gray-800 px-8 py-4 flex items-center justify-between">
-      <div className="flex items-center gap-6">
-        <Link href="/" className="text-white font-bold text-lg">
-          📦 CoreHardware
+    <nav className="bg-gray-900 border-b border-cyan-900 px-8 py-4 flex items-center justify-between">
+      <div className="flex items-center gap-8">
+        <Link href="/" className="flex items-center gap-2">
+          <span className="text-2xl">📦</span>
+          <span className="font-bold text-xl tracking-tight">
+            <span className="text-white">CORE</span>
+            <span className="text-cyan-400">HARDWARE</span>
+          </span>
         </Link>
-        <div className="flex gap-4">
+        <div className="flex gap-6">
           {links.map((link) => (
             <Link
               key={link.href}
               href={link.href}
               className={`text-sm transition ${
                 pathname === link.href
-                  ? "text-white font-semibold"
+                  ? "text-cyan-400 font-semibold"
                   : "text-gray-400 hover:text-white"
               }`}
             >
