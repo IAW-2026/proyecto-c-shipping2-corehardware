@@ -59,7 +59,7 @@ export default async function AdminOperadoresPage({ searchParams }: Props) {
           Buscar
         </button>
         {buscar && (
-          
+          <a
             href="/admin/operadores"
             className="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition"
           >
@@ -110,7 +110,7 @@ export default async function AdminOperadoresPage({ searchParams }: Props) {
       {totalPaginas > 1 && (
         <div className="flex gap-2 mt-6">
           {Array.from({ length: totalPaginas }, (_, i) => i + 1).map((p) => (
-            
+            <a
               key={p}
               href={`/admin/operadores?${buscar ? `buscar=${buscar}&` : ""}page=${p}`}
               className={`px-4 py-2 rounded-lg text-sm font-medium border transition ${
