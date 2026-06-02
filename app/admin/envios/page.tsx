@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import AsignarOperador from "./AsignarOperador";
 
 interface Props {
   searchParams: Promise<{ estado?: string; page?: string; buscar?: string; fecha?: string }>;
@@ -25,7 +26,7 @@ export default async function AdminEnviosPage({ searchParams }: Props) {
     ];
   }
 
-  const [envios, total] = await Promise.all([
+  const [envios, total, operadores] = await Promise.all([
     prisma.envio.findMany({
       where,
       include: { operador: true },
@@ -34,6 +35,7 @@ export default async function AdminEnviosPage({ searchParams }: Props) {
       take: POR_PAGINA,
     }),
     prisma.envio.count({ where }),
+    prisma.operador.findMany({ where: { is_deleted: false }, orderBy: { apellido: "asc" } }),
   ]);
 
   const totalPaginas = Math.ceil(total / POR_PAGINA);
@@ -109,6 +111,7 @@ export default async function AdminEnviosPage({ searchParams }: Props) {
               <th className="p-3 border border-gray-700">Dirección</th>
               <th className="p-3 border border-gray-700">Operador</th>
               <th className="p-3 border border-gray-700">Entrega estimada</th>
+              <th className="p-3 border border-gray-700">Asignar operador</th>
             </tr>
           </thead>
           <tbody>
@@ -125,6 +128,14 @@ export default async function AdminEnviosPage({ searchParams }: Props) {
                   {envio.fecha_de_entrega
                     ? new Date(envio.fecha_de_entrega).toLocaleDateString()
                     : "-"}
+                </td>
+                <td className="p-3 border border-gray-700">
+                  <AsignarOperador
+                    envioId={envio.id}
+                    operadorActual={envio.operador_id}
+                    operadores={operadores}
+                    estado={envio.estado}
+                  />
                 </td>
               </tr>
             ))}

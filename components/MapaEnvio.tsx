@@ -24,7 +24,9 @@ interface Coordenada {
 }
 
 async function geocodificar(direccion: string): Promise<Coordenada | null> {
-  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(direccion)}&format=json&limit=1`;
+  
+  const direccionLimpia = direccion.replace(/'/g, "");
+  const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(direccionLimpia)}&format=json&limit=1`;
   const res = await fetch(url, {
     headers: { "User-Agent": "CoreHardware-Shipping/1.0" },
   });
@@ -47,11 +49,22 @@ export default function MapaEnvio({ origen, destino }: Props) {
   const [ruta, setRuta] = useState<[number, number][]>([]);
   const [loading, setLoading] = useState(true);
 
+  function normalizarDireccion(dir: string): string {
+    if (!dir.toLowerCase().includes("argentina")) {
+      return `${dir}, Argentina`;
+    }
+    return dir;
+  }
+
   useEffect(() => {
     async function cargarMapa() {
+
+      console.log("Origen:", origen);
+      console.log("Destino:", destino);
+
       const [co, cd] = await Promise.all([
-        geocodificar(origen),
-        geocodificar(destino),
+        geocodificar(normalizarDireccion(origen)),
+        geocodificar(normalizarDireccion(destino)),
       ]);
 
       setCoordOrigen(co);

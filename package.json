@@ -10,6 +10,7 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
+    "@clerk/backend": "^3.4.14",
     "@clerk/nextjs": "^7.4.2",
     "@prisma/client": "^6.19.3",
     "leaflet": "^1.9.4",

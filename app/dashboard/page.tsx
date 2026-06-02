@@ -1,6 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default async function DashboardPage() {
   const { userId } = await auth();
@@ -39,22 +40,29 @@ export default async function DashboardPage() {
       ) : (
         <table className="mt-4 w-full border-collapse">
           <thead>
-            <tr className="bg-gray-100 text-left">
-              <th className="p-2 border">ID</th>
-              <th className="p-2 border">Pedido</th>
-              <th className="p-2 border">Estado</th>
-              <th className="p-2 border">Dirección</th>
-              <th className="p-2 border">Entrega estimada</th>
+            <tr className="bg-gray-800 text-left text-gray-300">
+              <th className="p-3 border border-gray-700">ID</th>
+              <th className="p-3 border border-gray-700">Pedido</th>
+              <th className="p-3 border border-gray-700">Estado</th>
+              <th className="p-3 border border-gray-700">Dirección</th>
+              <th className="p-3 border border-gray-700">Entrega estimada</th>
             </tr>
           </thead>
           <tbody>
             {envios.map((envio) => (
-              <tr key={envio.id} className="hover:bg-gray-50">
-                <td className="p-2 border">{envio.id}</td>
-                <td className="p-2 border">{envio.pedido_id}</td>
-                <td className="p-2 border">{envio.estado}</td>
-                <td className="p-2 border">{envio.direccion}</td>
-                <td className="p-2 border">
+              <tr key={envio.id} className="text-gray-300 hover:bg-gray-800 transition">
+                <td className="p-3 border border-gray-700">
+                  <Link
+                    href={`/dashboard/envios/${envio.id}`}
+                    className="text-blue-400 hover:text-blue-300 underline"
+                  >
+                    {envio.id.slice(0, 8)}...
+                  </Link>
+                </td>
+                <td className="p-3 border border-gray-700">{envio.pedido_id}</td>
+                <td className="p-3 border border-gray-700">{envio.estado}</td>
+                <td className="p-3 border border-gray-700">{envio.direccion}</td>
+                <td className="p-3 border border-gray-700">
                   {envio.fecha_de_entrega
                     ? new Date(envio.fecha_de_entrega).toLocaleDateString()
                     : "-"}

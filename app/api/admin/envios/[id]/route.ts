@@ -1,18 +1,20 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
-
 export async function PATCH(
   req: NextRequest,
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params;
-  const { is_deleted } = await req.json();
+  const { operador_id } = await req.json();
 
-  const operador = await prisma.operador.update({
+  const envio = await prisma.envio.update({
     where: { id },
-    data: { is_deleted },
+    data: { 
+      operador_id: operador_id || null,
+      estado: operador_id ? "ASIGNADO" : "PENDIENTE"
+    },
   });
 
-  return NextResponse.json(operador, { status: 200 });
+  return NextResponse.json(envio, { status: 200 });
 }

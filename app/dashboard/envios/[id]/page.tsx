@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import ActualizarEstado from "./ActualizarEstado";
 import MapaWrapper from "./MapaWrapper";
 
+export const dynamic = "force-dynamic";
+
 interface Props {
   params: Promise<{ id: string }>;
 }
@@ -44,7 +46,7 @@ export default async function EnvioDetailPage({ params }: Props) {
       <div className="mt-6">
         <h2 className="text-xl font-semibold mb-3">Ruta del envío</h2>
         <MapaWrapper
-          origen={envio.operador?.direccion || "Bahía Blanca"}
+          origen={envio.operador?.direccion || "Bahía Blanca, Argentina"}
           destino={envio.direccion}
         />
       </div>

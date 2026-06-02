@@ -2,14 +2,6 @@
 
 import { useState } from "react";
 
-const ESTADOS = [
-  "PENDIENTE",
-  "ASIGNADO",
-  "RETIRADO",
-  "EN_CAMINO",
-  "ENTREGADO",
-];
-
 interface Props {
   envioId: string;
   estadoActual: string;
@@ -39,6 +31,16 @@ export default function ActualizarEstado({ envioId, estadoActual }: Props) {
     setLoading(false);
   }
 
+  const TRANSICIONES: Record<string, string[]> = {
+    PENDIENTE: ["ASIGNADO"],
+    ASIGNADO: ["RETIRADO"],
+    RETIRADO: ["EN_CAMINO"],
+    EN_CAMINO: ["ENTREGADO"],
+    ENTREGADO: [],
+  };
+
+  const estadosSiguientes = TRANSICIONES[estadoActual] || [];
+
   return (
     <div className="space-y-4">
       <h2 className="text-xl font-semibold">Actualizar Estado</h2>
@@ -46,19 +48,21 @@ export default function ActualizarEstado({ envioId, estadoActual }: Props) {
       <select
         value={estado}
         onChange={(e) => setEstado(e.target.value)}
-        className="border p-2 rounded"
+        disabled={estadosSiguientes.length === 0}
+        className="border p-2 rounded bg-gray-800 text-white border-gray-600"
       >
-        {ESTADOS.map((e) => (
+        <option value={estadoActual}>{estadoActual}</option>
+        {estadosSiguientes.map((e) => (
           <option key={e} value={e}>{e}</option>
         ))}
       </select>
 
       <button
         onClick={handleActualizar}
-        disabled={loading}
+        disabled={loading || estadosSiguientes.length === 0}
         className="ml-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 disabled:opacity-50"
       >
-        {loading ? "Guardando..." : "Actualizar"}
+        {loading ? "Guardando..." : estadosSiguientes.length === 0 ? "Entregado" : "Actualizar"}
       </button>
 
       {mensaje && <p className="mt-2">{mensaje}</p>}

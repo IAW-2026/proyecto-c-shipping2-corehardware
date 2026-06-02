@@ -23,6 +23,7 @@ export default function NuevoOperadorForm() {
       dni: (form.elements.namedItem("dni") as HTMLInputElement).value,
       cuil_cuit: (form.elements.namedItem("cuil_cuit") as HTMLInputElement).value,
       direccion: (form.elements.namedItem("direccion") as HTMLInputElement).value,
+      password: (form.elements.namedItem("password") as HTMLInputElement).value,
     };
 
     const res = await fetch("/api/admin/operadores", {
@@ -56,20 +57,22 @@ export default function NuevoOperadorForm() {
           <h2 className="text-lg font-semibold text-white">Nuevo operador</h2>
           <div className="grid grid-cols-2 gap-4">
             {[
-              { name: "nombre", placeholder: "Nombre", pattern: undefined },
-              { name: "apellido", placeholder: "Apellido", pattern: undefined },
-              { name: "mail", placeholder: "ejemplo@mail.com", pattern: undefined },
-              { name: "celular", placeholder: "291-4123456", pattern: undefined },
-              { name: "dni", placeholder: "12345678", pattern: "[0-9]{7,8}" },
-              { name: "cuil_cuit", placeholder: "20-12345678-9", pattern: "[0-9]{2}-[0-9]{7,8}-[0-9]" },
-              { name: "direccion", placeholder: "Av. Colón 1234, Bahía Blanca", pattern: undefined }
+              { name: "nombre", placeholder: "Nombre", pattern: undefined, type: "text" },
+              { name: "apellido", placeholder: "Apellido", pattern: undefined, type: "text" },
+              { name: "mail", placeholder: "ejemplo@mail.com", pattern: undefined, type: "text" },
+              { name: "celular", placeholder: "291-4123456", pattern: undefined, type: "text" },
+              { name: "dni", placeholder: "12345678", pattern: "[0-9]{7,8}", type: "text" },
+              { name: "cuil_cuit", placeholder: "20-12345678-9", pattern: "[0-9]{2}-[0-9]{7,8}-[0-9]", type: "text" },
+              { name: "direccion", placeholder: "Av. Colón 1234, Bahía Blanca", pattern: undefined, type: "text" },
+              { name: "password", placeholder: "Contraseña", pattern: undefined, type: "password" },
             ].map((field) => (
               <input
                 key={field.name}
                 name={field.name}
+                type={field.type}
                 placeholder={field.placeholder}
                 pattern={field.pattern}
-                required={["nombre", "apellido", "mail", "celular", "dni"].includes(field.name)}
+                required={["nombre", "apellido", "mail", "celular", "dni", "password"].includes(field.name)}
                 className="bg-gray-700 text-white border border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 placeholder-gray-400"
               />
             ))}
