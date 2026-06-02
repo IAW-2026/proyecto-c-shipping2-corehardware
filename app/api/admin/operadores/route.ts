@@ -1,8 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { createClerkClient } from "@clerk/backend";
-
-const clerk = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
+import { clerkClient } from "@clerk/nextjs/server";
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -14,7 +12,8 @@ export async function POST(req: NextRequest) {
 
   let clerkUser;
   try {
-    clerkUser = await clerk.users.createUser({
+    const client = await clerkClient();
+    clerkUser = await client.users.createUser({
       emailAddress: [mail],
       password,
       firstName: nombre,
