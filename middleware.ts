@@ -18,16 +18,18 @@ export default clerkMiddleware(async (auth, req) => {
   const { userId, sessionClaims } = await auth();
 
   if (!userId) {
-  const signInUrl = new URL("/sign-in", req.url);
-  signInUrl.searchParams.set("redirect_url", req.url);
-  return NextResponse.redirect(signInUrl);
-}
+    const signInUrl = new URL("/sign-in", req.url);
+    signInUrl.searchParams.set("redirect_url", req.url);
+    return NextResponse.redirect(signInUrl);
+  }
 
-  const role = (sessionClaims?.publicMetadata as Record<string, unknown>)?.role;
+  const role = (sessionClaims as Record<string, unknown>)?.publicMetadata
+    ? ((sessionClaims as Record<string, unknown>).publicMetadata as Record<string, unknown>)?.role
+    : undefined;
 
   if (isAdminRoute(req) && role !== "admin") {
-  return NextResponse.redirect(new URL("/unauthorized", req.url));
-}
+    return NextResponse.redirect(new URL("/unauthorized", req.url));
+  }
 
   if (isDashboardRoute(req) && role !== "logistics" && role !== "admin") {
     return NextResponse.redirect(new URL("/", req.url));
