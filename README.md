@@ -56,6 +56,43 @@ El sistema se integra con las demás apps del ecosistema (Buyer, Seller y Paymen
 
 ---
 
+## Estrategia de autorización (defense in depth)
+
+A partir del feedback de la defensa se reforzó la seguridad aplicando el principio de **separación entre front y back**: cada capa valida lo suyo y ninguna confía en que la anterior haya validado.
+
+### Tres capas de control
+
+| Capa | Qué valida | Cómo |
+|------|-----------|------|
+| **Middleware** (`middleware.ts`) | Sesión activa + rol para acceso a páginas | `auth.protect()` + chequeo de `publicMetadata.role` para rutas `/admin/*` y `/dashboard/*` |
+| **API routes mutantes** (POST/PUT/PATCH/DELETE) | Rol del usuario que invoca el endpoint | Helpers `requireAdmin()` / `requireOperador()` en `lib/auth.ts` |
+| **API del operador** (cambio de estado) | Ownership: el operador solo modifica sus propios envíos | Lookup del operador por `clerk_user_id` y comparación con `envio.operador_id` |
+
+### Por qué la triple capa
+
+- El **front** oculta opciones por UX (mejor experiencia), pero un atacante no usa la UI: usa `curl` o las DevTools.
+- El **middleware** redirige en navegación normal, pero podría tener bugs de configuración o no cubrir todos los casos edge.
+- Cada **endpoint** valida su propia autorización como última línea de defensa. Es la única fuente de verdad confiable.
+
+### Endpoints y su validación
+
+| Endpoint | Método | Validación |
+|----------|--------|-----------|
+| `/api/admin/operadores` | POST | `requireAdmin` |
+| `/api/admin/operadores/[id]` | PATCH | `requireAdmin` |
+| `/api/admin/envios/[id]` | PATCH | `requireAdmin` |
+| `/api/dashboard/envios/[id]/estado` | PUT | `requireOperador` + ownership check |
+| `/api/shipping/shipments` | POST | API Key (`X-API-Key`) — inter-servicio |
+| `/api/shipping/shipments/[id]` | GET | API Key (`X-API-Key`) — inter-servicio |
+| `/api/webhooks/clerk` | POST | Firma `svix` |
+| `/api/tracking/[id]` | GET | Público (sin auth, solo expone campos seguros) |
+
+### Cómo verificar que funciona
+
+Con un usuario operador logueado, una llamada directa a un endpoint admin devuelve **403 Forbidden** sin tocar la DB. Igualmente, un operador intentando cambiar el estado de un envío de otro operador recibe **403**.
+
+---
+
 **Dependencias:**
 - **Framework:** Next.js 15
 - **Autenticación:** Clerk

@@ -1,8 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { clerkClient } from "@clerk/nextjs/server";
+import { requireAdmin } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
+  const forbidden = await requireAdmin();
+  if (forbidden) return forbidden;
+
   const body = await req.json();
   const { nombre, apellido, mail, celular, dni, cuil_cuit, sexo, direccion, nacionalidad, fecha_nacimiento, password } = body;
 
