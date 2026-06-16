@@ -123,6 +123,29 @@ Esto asegura que una caída de otra app no rompa la experiencia del operador en 
 
 ---
 
+## Endpoints de observabilidad y stats
+
+Para consumo de Control Plane y Analytics Dashboard:
+
+| Endpoint | Auth | Devuelve |
+|----------|------|---------|
+| `GET /api/health` | Público | Estado de la app y latencia de la DB |
+| `GET /api/admin/stats/resumen` | Admin | Totales agregados (envíos, operadores activos/inactivos) |
+| `GET /api/admin/stats/envios-por-estado` | Admin | Cantidad de envíos agrupados por estado |
+| `GET /api/admin/stats/operadores-top` | Admin | Top 10 operadores por envíos entregados |
+| `GET /api/admin/stats/entregas-recientes` | Admin | Volumen de entregas en últimos 7/30/90 días |
+
+`/api/health` devuelve 200 con `status: "ok"` si la DB responde, 503 con `status: "degraded"` si no. Pensado para que Control Plane muestre semáforos verde/rojo por app.
+
+---
+
+## Reglas de negocio reforzadas
+
+- **Transiciones de estado validadas en el backend:** un envío solo puede avanzar al estado inmediato siguiente. Intentar saltar pasos (por ejemplo `PENDIENTE → ENTREGADO`) devuelve 400.
+- **`fecha_de_entrega` automática:** al pasar un envío a `ENTREGADO`, si no tiene fecha cargada, se setea con `new Date()`.
+
+---
+
 **Dependencias:**
 - **Framework:** Next.js 15
 - **Autenticación:** Clerk

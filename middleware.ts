@@ -7,6 +7,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/shipping(.*)",
   "/api/tracking(.*)",
   "/api/webhooks(.*)",
+  "/api/health",
 ]);
 
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
