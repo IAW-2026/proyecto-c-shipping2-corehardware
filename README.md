@@ -50,7 +50,7 @@ El sistema se integra con las demás apps del ecosistema (Buyer, Seller y Paymen
 - **API externa:** se integró OpenStreetMap (Nominatim para geocodificación) y OSRM para el cálculo de rutas reales, visible en el detalle de cada envío
 - **Autenticación:** Clerk con roles `logistics` y `admin`. Los operadores creados desde el panel admin se registran automáticamente en Clerk
 - **API Key:** los endpoints REST expuestos usan el header `X-API-Key` para autenticación entre servicios
-- **Mocks:** las llamadas a Buyer App están en `src/lib/mocks.ts`, listas para reemplazarse en la Etapa 3
+- **Integración inter-servicio (Etapa 3):** los mocks fueron reemplazados por clientes HTTP reales en `lib/clients/buyer.ts` y `lib/clients/seller.ts`. URLs y API Keys se configuran por variables de entorno (`BUYER_APP_URL`, `BUYER_API_KEY`, `SELLER_APP_URL`, `SELLER_API_KEY`)
 - **Estados de envío:** `PENDIENTE → ASIGNADO → RETIRADO → EN_CAMINO → ENTREGADO`, con transiciones validadas tanto en frontend como backend
 - **Webhook de Clerk:** configurado para asignar rol `logistics` automáticamente al crear operadores
 
@@ -90,6 +90,36 @@ A partir del feedback de la defensa se reforzó la seguridad aplicando el princi
 ### Cómo verificar que funciona
 
 Con un usuario operador logueado, una llamada directa a un endpoint admin devuelve **403 Forbidden** sin tocar la DB. Igualmente, un operador intentando cambiar el estado de un envío de otro operador recibe **403**.
+
+---
+
+## Integración con otras apps (Etapa 3)
+
+Los mocks de Etapa 2 fueron reemplazados por clientes HTTP reales:
+
+| Cliente | App externa | Funciones |
+|---------|-------------|-----------|
+| `lib/clients/buyer.ts` | Buyer App | `getComprador`, `getPedido`, `notificarEnvioCreado` |
+| `lib/clients/seller.ts` | Seller App | `getVendedor` |
+
+### Variables de entorno requeridas
+
+```
+BUYER_APP_URL=https://proyecto-c-buyer2-corehardware.vercel.app
+BUYER_API_KEY=<provista por el equipo Buyer>
+SELLER_APP_URL=https://proyecto-c-seller2-corehardware.vercel.app
+SELLER_API_KEY=<provista por el equipo Seller>
+```
+
+### Comportamiento ante fallos
+
+Cada cliente está diseñado para **fallar de forma degradada**:
+
+- Si Buyer no responde al crear un envío, el envío se persiste igual y se loguea el error de notificación (no se pierde el dato).
+- Si Buyer o Seller no responden al cargar el detalle, la página muestra solo los datos locales con un mensaje "Datos no disponibles" en las secciones afectadas.
+- El origen del mapa usa la dirección del vendedor; si no está disponible, cae a la del operador, y por último a Bahía Blanca como default.
+
+Esto asegura que una caída de otra app no rompa la experiencia del operador en su panel.
 
 ---
 

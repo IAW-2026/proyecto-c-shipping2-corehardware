@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import ActualizarEstado from "./ActualizarEstado";
 import MapaWrapper from "./MapaWrapper";
 import Link from "next/link";
+import { getPedido, getComprador } from "@/lib/clients/buyer";
+import { getVendedor } from "@/lib/clients/seller";
 
 export const dynamic = "force-dynamic";
 
@@ -19,6 +21,17 @@ export default async function EnvioDetailPage({ params }: Props) {
   });
 
   if (!envio) notFound();
+
+  const pedido = await getPedido(envio.pedido_id);
+  const [comprador, vendedor] = pedido
+    ? await Promise.all([
+        getComprador(pedido.comprador_id),
+        getVendedor(pedido.vendedor_id),
+      ])
+    : [null, null];
+
+  const origenMapa =
+    vendedor?.direccion || envio.operador?.direccion || "Bahía Blanca, Argentina";
 
   return (
     <main className="p-8">
@@ -82,10 +95,60 @@ export default async function EnvioDetailPage({ params }: Props) {
         </div>
       </div>
 
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div className="bg-gray-900 rounded-xl border border-gray-800 p-6 space-y-3">
+          <h2 className="text-lg font-semibold text-cyan-400 mb-4">Comprador</h2>
+          {comprador ? (
+            <>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Nombre</span>
+                <span className="text-white">{comprador.nombre} {comprador.apellido}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Email</span>
+                <span className="text-white">{comprador.mail}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Celular</span>
+                <span className="text-white">{comprador.celular}</span>
+              </div>
+            </>
+          ) : (
+            <p className="text-gray-500 text-sm">Datos del comprador no disponibles.</p>
+          )}
+        </div>
+
+        <div className="bg-gray-900 rounded-xl border border-gray-800 p-6 space-y-3">
+          <h2 className="text-lg font-semibold text-cyan-400 mb-4">Vendedor (origen)</h2>
+          {vendedor ? (
+            <>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Razón social</span>
+                <span className="text-white">{vendedor.razon_social}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Dirección</span>
+                <span className="text-white text-right max-w-xs">{vendedor.direccion}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Email</span>
+                <span className="text-white">{vendedor.mail}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-gray-400">Celular</span>
+                <span className="text-white">{vendedor.celular}</span>
+              </div>
+            </>
+          ) : (
+            <p className="text-gray-500 text-sm">Datos del vendedor no disponibles.</p>
+          )}
+        </div>
+      </div>
+
       <div className="bg-gray-900 rounded-xl border border-gray-800 p-6">
         <h2 className="text-lg font-semibold text-cyan-400 mb-4">Ruta del envío</h2>
         <MapaWrapper
-          origen={envio.operador?.direccion || "Bahía Blanca, Argentina"}
+          origen={origenMapa}
           destino={envio.direccion}
         />
       </div>

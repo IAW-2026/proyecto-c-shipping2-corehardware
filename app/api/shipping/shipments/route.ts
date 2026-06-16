@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { notificarEnvioCreado } from "@/lib/mocks";
+import { notificarEnvioCreado } from "@/lib/clients/buyer";
 
 export async function POST(req: NextRequest) {
   const apiKey = req.headers.get("X-API-Key");
@@ -31,7 +31,12 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  await notificarEnvioCreado(orden_id, envio.id);
+  // Notificar a Buyer del shipmentID. Si falla, el envío ya está creado:
+  // queda log de error para reintento manual; no rompemos la transacción.
+  const ok = await notificarEnvioCreado(orden_id, envio.id);
+  if (!ok) {
+    console.warn(`[shipments] Envío ${envio.id} creado pero notificación a Buyer falló`);
+  }
 
   return NextResponse.json(envio, { status: 201 });
 }
