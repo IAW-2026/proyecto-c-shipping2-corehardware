@@ -88,6 +88,7 @@ También identificar posibles duplicados entre apps (ej: usuarios) y definir có
 ### Envio
 - ID
 - Pedido Id
+- Operador Id (opcional, null si aún no fue asignado)
 - Fecha de entrega
 - Estado
 - Monto (Monto de productos + envío)

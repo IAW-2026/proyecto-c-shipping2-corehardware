@@ -8,7 +8,7 @@
 |-----|-------------|-------------|
 | Buyer App | Yanina Rivera | `proyecto-c-buyer-corehardware` |
 | Seller App | Sebastián Pereda | `proyecto-c-seller-corehardware` |
-| Shipping App | Matias Junca | `proyecto-c-shipping-corehardware` |
+| Shipping App | Matias Junca | `proyecto-c-shipping2-corehardware` |
 | Payments App | Agustin Ferrante | `proyecto-c-payments-corehardware` |
 
 ---
@@ -51,4 +51,4 @@
 | Payments App | Hacer el checkout de un pedido (acción) | Buyer App | POST api/checkout |
 | Buyer App | Comprador (dato) | Seller App / Shipping App / Payments App | GET api/buyers/{id} |
 | Buyer App | Pedido (dato) | Seller App / Shipping App | GET api/orders/{id} |
-| Buyer App | Editar el id del envío de un pedido (acción)  | Shipping App | POST api/orders/{id}/shipment |
+| Buyer App | Editar el id del envío de un pedido (acción)  | Shipping App | PUT api/orders/{id}/shipment |
