@@ -52,7 +52,7 @@ El sistema se integra con las demás apps del ecosistema (Buyer, Seller y Paymen
 - **API Key:** los endpoints REST expuestos usan el header `X-API-Key` para autenticación entre servicios
 - **Integración inter-servicio (Etapa 3):** los mocks fueron reemplazados por clientes HTTP reales en `lib/clients/buyer.ts` y `lib/clients/seller.ts`. URLs y API Keys se configuran por variables de entorno (`BUYER_APP_URL`, `BUYER_API_KEY`, `SELLER_APP_URL`, `SELLER_API_KEY`)
 - **Estados de envío:** `PENDIENTE → ASIGNADO → RETIRADO → EN_CAMINO → ENTREGADO`, con transiciones validadas tanto en frontend como backend
-- **Webhook de Clerk:** configurado para asignar rol `logistics` automáticamente al crear operadores
+- **Webhook de Clerk:** configurado para asignar rol `logistics` automáticamente al crear operadores. **Nota:** los webhooks de Clerk no se disparan contra dominios `.vercel.app` gratuitos (requieren un dominio custom o Vercel Pro). El webhook queda como fallback, pero **el flujo principal de alta de operadores no depende de él**: el endpoint `POST /api/admin/operadores` crea el usuario en Clerk vía `clerkClient.users.createUser()` y persiste el operador en la DB en la misma operación, por lo que la alta funciona correctamente en producción aunque el webhook no llegue a dispararse
 
 ---
 
