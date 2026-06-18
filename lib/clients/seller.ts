@@ -11,7 +11,7 @@ function headers() {
 }
 
 export interface Vendedor {
-  id: number;
+  id: string;
   cuit: string;
   razon_social: string;
   direccion: string;
@@ -20,7 +20,7 @@ export interface Vendedor {
   condicion_iva: string;
 }
 
-export async function getVendedor(id: number | string): Promise<Vendedor | null> {
+export async function getVendedor(id: string): Promise<Vendedor | null> {
   try {
     const res = await fetch(`${BASE_URL}/api/sellers/${id}`, {
       headers: headers(),

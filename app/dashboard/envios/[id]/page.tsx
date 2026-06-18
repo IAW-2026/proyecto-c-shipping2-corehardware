@@ -5,6 +5,7 @@ import MapaWrapper from "./MapaWrapper";
 import Link from "next/link";
 import { getPedido, getComprador } from "@/lib/clients/buyer";
 import { getVendedor } from "@/lib/clients/seller";
+import CopyableId from "@/components/CopyableId";
 
 export const dynamic = "force-dynamic";
 
@@ -47,11 +48,11 @@ export default async function EnvioDetailPage({ params }: Props) {
           <h2 className="text-lg font-semibold text-cyan-400 mb-4">Información del envío</h2>
           <div className="flex justify-between">
             <span className="text-gray-400">ID</span>
-            <span className="text-white font-mono text-sm">{envio.id.slice(0, 12)}...</span>
+            <CopyableId value={envio.id} truncate={12} className="text-white" />
           </div>
           <div className="flex justify-between">
             <span className="text-gray-400">Pedido</span>
-            <span className="text-white">#{envio.pedido_id}</span>
+            <CopyableId value={envio.pedido_id} prefix="#" truncate={12} />
           </div>
           <div className="flex justify-between">
             <span className="text-gray-400">Estado</span>

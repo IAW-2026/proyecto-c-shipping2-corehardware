@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import AsignarOperador from "./AsignarOperador";
+import CopyableId from "@/components/CopyableId";
 
 interface Props {
   searchParams: Promise<{ estado?: string; page?: string; buscar?: string; fecha?: string }>;
@@ -120,8 +121,8 @@ export default async function AdminEnviosPage({ searchParams }: Props) {
             <tbody className="divide-y divide-gray-800">
               {envios.map((envio) => (
                 <tr key={envio.id} className="hover:bg-gray-800 transition text-gray-300">
-                  <td className="px-6 py-4 font-mono text-sm text-cyan-400">{envio.id.slice(0, 8)}...</td>
-                  <td className="px-6 py-4">#{envio.pedido_id}</td>
+                  <td className="px-6 py-4"><CopyableId value={envio.id} className="text-cyan-400" /></td>
+                  <td className="px-6 py-4"><CopyableId value={envio.pedido_id} prefix="#" /></td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                       envio.estado === "ENTREGADO" ? "bg-green-900 text-green-400" :

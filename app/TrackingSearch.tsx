@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import CopyableId from "@/components/CopyableId";
 
 const ESTADOS = ["PENDIENTE", "ASIGNADO", "RETIRADO", "EN_CAMINO", "ENTREGADO"];
 
@@ -14,7 +15,7 @@ const ESTADO_LABELS: Record<string, string> = {
 
 interface Envio {
   id: string;
-  pedido_id: number;
+  pedido_id: string;
   estado: string;
   direccion: string;
   monto: number;
@@ -75,7 +76,7 @@ export default function TrackingSearch() {
         <div className="bg-gray-900 rounded-xl p-6 space-y-6 border border-gray-700">
           <div>
             <p className="text-gray-400 text-sm">ID del envío</p>
-            <p className="text-cyan-400 font-mono text-sm">{envio.id}</p>
+            <CopyableId value={envio.id} truncate={envio.id.length} className="text-cyan-400" />
           </div>
 
           <div>
@@ -130,7 +131,7 @@ export default function TrackingSearch() {
             </div>
             <div>
               <p className="text-gray-400 text-sm">Pedido</p>
-              <p className="text-white">#{envio.pedido_id}</p>
+              <CopyableId value={envio.pedido_id} prefix="#" truncate={12} className="text-white" />
             </div>
           </div>
         </div>

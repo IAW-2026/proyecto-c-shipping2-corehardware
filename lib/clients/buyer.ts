@@ -12,7 +12,7 @@ function headers() {
 }
 
 export interface Comprador {
-  id: number;
+  id: string;
   dni: number;
   cuil_cuit: string;
   apellido: string;
@@ -24,17 +24,17 @@ export interface Comprador {
 }
 
 export interface Pedido {
-  id: number;
+  id: string;
   fecha: string;
-  comprador_id: number;
-  vendedor_id: number;
-  productos: number[];
+  comprador_id: string;
+  vendedor_id: string;
+  productos: string[];
   monto: number;
   estado: string;
-  envio_id: number | null;
+  envio_id: string | null;
 }
 
-export async function getComprador(id: number | string): Promise<Comprador | null> {
+export async function getComprador(id: string): Promise<Comprador | null> {
   try {
     const res = await fetch(`${BASE_URL}/api/buyers/${id}`, {
       headers: headers(),
@@ -48,7 +48,7 @@ export async function getComprador(id: number | string): Promise<Comprador | nul
   }
 }
 
-export async function getPedido(id: number | string): Promise<Pedido | null> {
+export async function getPedido(id: string): Promise<Pedido | null> {
   try {
     const res = await fetch(`${BASE_URL}/api/orders/${id}`, {
       headers: headers(),
@@ -63,7 +63,7 @@ export async function getPedido(id: number | string): Promise<Pedido | null> {
 }
 
 export async function notificarEnvioCreado(
-  ordenId: number,
+  ordenId: string,
   envioId: string
 ): Promise<boolean> {
   try {

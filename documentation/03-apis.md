@@ -90,19 +90,21 @@ Documentar cada endpoint que una app expone para ser consumido por otra app del 
     - Envia solo url.
         - Request body: {}
     - Recibe datos del envio con ese id
-        - Response (200): { "id": number, "pedido_id": number, "fecha_de_entrega": string, "estado": string, "monto": number, "direccion": string }    
+        - Response (200): { "id": string, "pedido_id": string, "fecha_de_entrega": string, "estado": string, "monto": number, "direccion": string }    
         - Response (404): { "message" : string}
     - Llamado por Buyer
     - Utiliza APIKey de Shipping
 - POST api/shipment/
     - Envia la información de un pedido
-        - Request body: { "id": number, "fecha": string, "comprador_id": number, "vendedor_id": number, "productos":[producto_id: number,... ], "monto": number }
+        - Request body: { "id": string, "fecha": string, "comprador_id": string, "vendedor_id": string, "productos":[producto_id: string,... ], "monto": number }
     - No recibe datos
-        - Response (201): { "id": number, "pedido_id": number, "fecha_de_entrega": string, "estado": string, "monto": number, "direccion": string } 
+        - Response (201): { "id": string, "pedido_id": string, "fecha_de_entrega": string, "estado": string, "monto": number, "direccion": string } 
         - Response (400): { "message": string}
         - Response (405): { "message": string}
     - Llamado por Seller
     - Utiliza APIKey de Shipping
+
+> **Nota Etapa 3:** los IDs son CUIDs (strings), no números. La doc original decía `number` pero el ecosistema decidió usar CUIDs para los IDs de entidades. Solo `monto` y `dni` siguen siendo `number`.
 
 <!-- Documentar los endpoints que expone esta app -->
 

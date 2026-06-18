@@ -112,7 +112,7 @@ async function main() {
   await prisma.envio.createMany({
     data: [
       {
-        pedido_id: 1001,
+        pedido_id: "cl1001seedpedidoabc123",
         operador_id: op1.id,
         estado: "ENTREGADO",
         direccion: "Av. Alem 890, Bahía Blanca",
@@ -120,7 +120,7 @@ async function main() {
         fecha_de_entrega: new Date("2026-05-10"),
       },
       {
-        pedido_id: 1002,
+        pedido_id: "cl1002seedpedidoabc456",
         operador_id: op1.id,
         estado: "EN_CAMINO",
         direccion: "Av. Cerri 234, Bahía Blanca",
@@ -128,7 +128,7 @@ async function main() {
         fecha_de_entrega: new Date("2026-06-01"),
       },
       {
-        pedido_id: 1003,
+        pedido_id: "cl1003seedpedidoabc789",
         operador_id: op2.id,
         estado: "ASIGNADO",
         direccion: "Chiclana 456, Bahía Blanca",
@@ -136,7 +136,7 @@ async function main() {
         fecha_de_entrega: new Date("2026-06-02"),
       },
       {
-        pedido_id: 1004,
+        pedido_id: "cl1004seedpedidoabcdef",
         operador_id: null,
         estado: "PENDIENTE",
         direccion: "Av. Alem 890, Bahía Blanca",
@@ -144,7 +144,7 @@ async function main() {
         fecha_de_entrega: new Date("2026-06-03"),
       },
       {
-        pedido_id: 1005,
+        pedido_id: "cl1005seedpedidoaceghi",
         operador_id: op2.id,
         estado: "RETIRADO",
         direccion: "Av. Fortín 321, Bahía Blanca",
@@ -152,7 +152,7 @@ async function main() {
         fecha_de_entrega: new Date("2026-06-04"),
       },
       {
-        pedido_id: 1006,
+        pedido_id: "cl1006seedpedidoacjklm",
         operador_id: op1.id,
         estado: "PENDIENTE",
         direccion: "Moreno 123, Bahía Blanca",
@@ -160,7 +160,7 @@ async function main() {
         fecha_de_entrega: new Date("2026-06-05"),
       },
       {
-        pedido_id: 1007,
+        pedido_id: "cl1007seedpedidoacnopq",
         operador_id: op2.id,
         estado: "EN_CAMINO",
         direccion: "Av. Alem 456, Bahía Blanca",
@@ -168,7 +168,7 @@ async function main() {
         fecha_de_entrega: new Date("2026-06-06"),
       },
       {
-        pedido_id: 1008,
+        pedido_id: "cl1008seedpedidoacrstu",
         operador_id: null,
         estado: "PENDIENTE",
         direccion: "Darregueira 789, Bahía Blanca",
@@ -176,7 +176,7 @@ async function main() {
         fecha_de_entrega: new Date("2026-06-07"),
       },
       {
-        pedido_id: 1009,
+        pedido_id: "cl1009seedpedidoacvwxy",
         operador_id: op1.id,
         estado: "ENTREGADO",
         direccion: "Av. Colón 321, Bahía Blanca",
@@ -184,7 +184,7 @@ async function main() {
         fecha_de_entrega: new Date("2026-05-28"),
       },
       {
-        pedido_id: 1010,
+        pedido_id: "cl1010seedpedidoazabcd",
         operador_id: op2.id,
         estado: "ASIGNADO",
         direccion: "Brown 654, Bahía Blanca",
@@ -192,7 +192,7 @@ async function main() {
         fecha_de_entrega: new Date("2026-06-08"),
       },
       {
-        pedido_id: 1011,
+        pedido_id: "cl1011seedpedidoazefgh",
         operador_id: op1.id,
         estado: "RETIRADO",
         direccion: "Av. Cerri 987, Bahía Blanca",
