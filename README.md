@@ -85,7 +85,9 @@ A partir del feedback de la defensa se reforzó la seguridad aplicando el princi
 | `/api/shipping/shipments` | POST | API Key (`X-API-Key`) — inter-servicio |
 | `/api/shipping/shipments/[id]` | GET | API Key (`X-API-Key`) — inter-servicio |
 | `/api/control-plane/envios` | GET | API Key (`X-API-Key`) — listado para Control Plane |
+| `/api/control-plane/envios/[id]` | PATCH | API Key (`X-API-Key`) — asignar operador |
 | `/api/control-plane/operadores` | GET | API Key (`X-API-Key`) — listado para Control Plane |
+| `/api/control-plane/operadores/[id]` | PATCH | API Key (`X-API-Key`) — activar/desactivar |
 | `/api/webhooks/clerk` | POST | Firma `svix` |
 | `/api/tracking/[id]` | GET | Público (sin auth, solo expone campos seguros) |
 
