@@ -7,6 +7,10 @@ export const dynamic = "force-dynamic";
 // Autenticación: X-API-Key === SHIPPING_API_KEY.
 // Retorna listado de operadores. Incluye los soft-deleted: el Control Plane
 // decide si mostrarlos o no según su filtro.
+//
+// Para cada operador devuelve dos contadores:
+//   - total_envios: todos los envíos asignados (cualquier estado)
+//   - envios_activos: envíos no entregados (PENDIENTE..EN_CAMINO)
 export async function GET(req: NextRequest) {
   if (req.headers.get("X-API-Key") !== process.env.SHIPPING_API_KEY) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
@@ -24,7 +28,7 @@ export async function GET(req: NextRequest) {
       celular: true,
       dni: true,
       is_deleted: true,
-      _count: { select: { envios: true } },
+      envios: { select: { id: true, estado: true } },
     },
   });
 
@@ -38,7 +42,8 @@ export async function GET(req: NextRequest) {
       celular: op.celular,
       dni: op.dni,
       is_deleted: op.is_deleted,
-      total_envios: op._count.envios,
+      total_envios: op.envios.length,
+      envios_activos: op.envios.filter((e) => e.estado !== "ENTREGADO").length,
     })),
   });
 }
