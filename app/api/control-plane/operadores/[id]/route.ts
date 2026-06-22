@@ -6,6 +6,11 @@ export const dynamic = "force-dynamic";
 // PATCH /api/control-plane/operadores/{id}
 // Body: { is_deleted: boolean }
 // Activa o desactiva (soft delete) un operador.
+//
+// Al DESACTIVAR, libera todos sus envíos que no estén ENTREGADO:
+//   - operador_id → null
+//   - estado → PENDIENTE
+// Los envíos ENTREGADO quedan intactos (preserva historial de quién entregó qué).
 export async function PATCH(
   req: NextRequest,
   context: { params: Promise<{ id: string }> }
@@ -29,9 +34,30 @@ export async function PATCH(
     return NextResponse.json({ message: "Operador no encontrado" }, { status: 404 });
   }
 
-  const actualizado = await prisma.operador.update({
-    where: { id },
-    data: { is_deleted: body.is_deleted },
+  // Transacción: actualiza el operador y libera sus envíos pendientes/en curso
+  // si se desactiva. Si se reactiva, no toca envíos.
+  const [actualizado, envios_liberados] = await prisma.$transaction(async (tx) => {
+    const op = await tx.operador.update({
+      where: { id },
+      data: { is_deleted: body.is_deleted },
+    });
+
+    let liberados = 0;
+    if (body.is_deleted) {
+      const result = await tx.envio.updateMany({
+        where: {
+          operador_id: id,
+          estado: { not: "ENTREGADO" },
+        },
+        data: {
+          operador_id: null,
+          estado: "PENDIENTE",
+        },
+      });
+      liberados = result.count;
+    }
+
+    return [op, liberados];
   });
 
   return NextResponse.json({
@@ -39,5 +65,6 @@ export async function PATCH(
     nombre: actualizado.nombre,
     apellido: actualizado.apellido,
     is_deleted: actualizado.is_deleted,
+    envios_liberados,
   });
 }
