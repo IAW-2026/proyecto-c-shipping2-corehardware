@@ -8,7 +8,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/tracking(.*)",
   "/api/webhooks(.*)",
   "/api/health",
-  "/api/control-plane(.*)",
+  "/api/analytics(.*)",
 ]);
 
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);

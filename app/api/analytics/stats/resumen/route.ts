@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-// GET /api/control-plane/stats/resumen
-// Resumen de la app Shipping para dashboards externos (Analytics, Control Plane).
+// GET /api/analytics/stats/resumen
+// Resumen de la app Shipping para el Analytics Dashboard.
 export async function GET(req: NextRequest) {
   if (req.headers.get("X-API-Key") !== process.env.SHIPPING_API_KEY) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
