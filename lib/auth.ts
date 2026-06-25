@@ -1,12 +1,15 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-type SessionMetadata = { role?: string };
-
+// Lee el rol del session token, aceptando tanto la convención `metadata`
+// (Clerk compartido del equipo) como `publicMetadata` (Clerk privado anterior).
 function getRole(sessionClaims: unknown): string | undefined {
   const claims = sessionClaims as Record<string, unknown> | null | undefined;
-  const meta = claims?.publicMetadata as SessionMetadata | undefined;
-  return meta?.role;
+  if (!claims) return undefined;
+  const meta =
+    (claims.metadata as Record<string, unknown> | undefined) ??
+    (claims.publicMetadata as Record<string, unknown> | undefined);
+  return meta?.role as string | undefined;
 }
 
 export async function requireAdmin(): Promise<NextResponse | null> {

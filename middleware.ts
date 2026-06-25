@@ -13,6 +13,15 @@ const isPublicRoute = createRouteMatcher([
 const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
 const isDashboardRoute = createRouteMatcher(["/dashboard(.*)"]);
 
+function readRole(sessionClaims: unknown): string | undefined {
+  const claims = sessionClaims as Record<string, unknown> | null | undefined;
+  if (!claims) return undefined;
+  const meta =
+    (claims.metadata as Record<string, unknown> | undefined) ??
+    (claims.publicMetadata as Record<string, unknown> | undefined);
+  return meta?.role as string | undefined;
+}
+
 export default clerkMiddleware(async (auth, req) => {
   if (isPublicRoute(req)) return NextResponse.next();
 
@@ -24,9 +33,7 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.redirect(signInUrl);
   }
 
-  const role = (sessionClaims as Record<string, unknown>)?.publicMetadata
-    ? ((sessionClaims as Record<string, unknown>).publicMetadata as Record<string, unknown>)?.role
-    : undefined;
+  const role = readRole(sessionClaims);
 
   if (isAdminRoute(req) && role !== "admin") {
     return NextResponse.redirect(new URL("/unauthorized", req.url));
