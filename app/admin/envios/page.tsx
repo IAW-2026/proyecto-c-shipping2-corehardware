@@ -116,6 +116,7 @@ export default async function AdminEnviosPage({ searchParams }: Props) {
                 <th className="px-6 py-3">Operador</th>
                 <th className="px-6 py-3">Entrega estimada</th>
                 <th className="px-6 py-3">Asignar operador</th>
+                <th className="px-6 py-3">Detalle</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800">
@@ -150,6 +151,14 @@ export default async function AdminEnviosPage({ searchParams }: Props) {
                       operadores={operadores}
                       estado={envio.estado}
                     />
+                  </td>
+                  <td className="px-6 py-4">
+                    <Link
+                      href={`/dashboard/envios/${envio.id}`}
+                      className="text-cyan-400 hover:text-cyan-300 text-sm transition"
+                    >
+                      Ver →
+                    </Link>
                   </td>
                 </tr>
               ))}
