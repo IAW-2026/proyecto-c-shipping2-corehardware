@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { requireOperador } from "@/lib/auth";
+import { actualizarEstadoPedido } from "@/lib/clients/buyer";
 
 const TRANSICIONES: Record<string, string[]> = {
   PENDIENTE: ["ASIGNADO"],
@@ -8,6 +9,14 @@ const TRANSICIONES: Record<string, string[]> = {
   RETIRADO: ["EN_CAMINO"],
   EN_CAMINO: ["ENTREGADO"],
   ENTREGADO: [],
+};
+
+// Solo RETIRADO y ENTREGADO tienen un equivalente en el estado del pedido de Buyer.
+// PENDIENTE/ASIGNADO son pasos internos de logística que Buyer no necesita ver.
+const ESTADO_ENVIO_A_PEDIDO: Record<string, string> = {
+  RETIRADO: "EN_CAMINO",
+  EN_CAMINO: "EN_CAMINO",
+  ENTREGADO: "ENTREGADO",
 };
 
 export async function PUT(
@@ -58,5 +67,14 @@ export async function PUT(
   }
 
   const actualizado = await prisma.envio.update({ where: { id }, data });
+
+  const estadoPedido = ESTADO_ENVIO_A_PEDIDO[estado];
+  if (estadoPedido) {
+    const ok = await actualizarEstadoPedido(envio.pedido_id, estadoPedido);
+    if (!ok) {
+      console.warn(`[estado] Envío ${id} actualizado pero no se pudo notificar a Buyer`);
+    }
+  }
+
   return NextResponse.json(actualizado, { status: 200 });
 }

@@ -82,3 +82,24 @@ export async function notificarEnvioCreado(
     return false;
   }
 }
+
+export async function actualizarEstadoPedido(
+  ordenId: string,
+  estado: string
+): Promise<boolean> {
+  try {
+    const res = await fetch(`${BASE_URL}/api/orders/${ordenId}/status`, {
+      method: "PUT",
+      headers: headers(),
+      body: JSON.stringify({ estado }),
+    });
+    if (!res.ok) {
+      console.error(`[Buyer] actualizarEstadoPedido: ${res.status}`);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    console.error("[Buyer] actualizarEstadoPedido falló:", err);
+    return false;
+  }
+}
