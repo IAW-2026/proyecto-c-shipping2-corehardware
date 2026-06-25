@@ -31,8 +31,10 @@ export default function ActualizarEstado({ envioId, estadoActual }: Props) {
     setLoading(false);
   }
 
+  // PENDIENTE → ASIGNADO no es una transición manual: se setea automáticamente
+  // al asignar un operador desde /admin/envios.
   const TRANSICIONES: Record<string, string[]> = {
-    PENDIENTE: ["ASIGNADO"],
+    PENDIENTE: [],
     ASIGNADO: ["RETIRADO"],
     RETIRADO: ["EN_CAMINO"],
     EN_CAMINO: ["ENTREGADO"],

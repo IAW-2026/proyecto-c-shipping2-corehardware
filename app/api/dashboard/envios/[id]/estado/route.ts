@@ -49,6 +49,15 @@ export async function PUT(
     );
   }
 
+  // ASIGNADO implica que hay un operador real asignado; no es un estado que
+  // se pueda setear "a mano" sin pasar por la asignación de operador.
+  if (estado === "ASIGNADO" && !envio.operador_id) {
+    return NextResponse.json(
+      { message: "No se puede pasar a ASIGNADO sin un operador asignado" },
+      { status: 400 }
+    );
+  }
+
   if (session.role !== "admin") {
     const operador = await prisma.operador.findUnique({
       where: { clerk_user_id: session.userId },
