@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { notificarEnvioCreado, getComprador } from "@/lib/clients/buyer";
+import { calcularFechaEstimada } from "@/lib/estimacion";
 
 export async function POST(req: NextRequest) {
   const apiKey = req.headers.get("X-API-Key");
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
         estado: "PENDIENTE",
         direccion: comprador?.direccion ?? "",
         monto,
+        fecha_estimada: calcularFechaEstimada("PENDIENTE"),
       },
     });
   } catch (err) {

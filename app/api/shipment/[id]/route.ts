@@ -34,7 +34,8 @@ export async function GET(
   return NextResponse.json({
     id: envio.id,
     pedido_id: envio.pedido_id,
-    fecha_de_entrega: envio.fecha_de_entrega,
+    // Antes de ENTREGADO, fecha_de_entrega lleva la estimación; al entregar, la fecha real.
+    fecha_de_entrega: envio.estado === "ENTREGADO" ? envio.fecha_de_entrega : envio.fecha_estimada,
     estado: envio.estado,
     monto: envio.monto,
     direccion: envio.direccion,

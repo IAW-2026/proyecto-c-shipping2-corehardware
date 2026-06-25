@@ -7,6 +7,7 @@ interface Props {
   truncate?: number;
   prefix?: string;
   className?: string;
+  align?: "start" | "end";
 }
 
 export default function CopyableId({
@@ -14,6 +15,7 @@ export default function CopyableId({
   truncate = 8,
   prefix = "",
   className = "",
+  align = "start",
 }: Props) {
   const [copied, setCopied] = useState(false);
 
@@ -29,7 +31,12 @@ export default function CopyableId({
     }
   }
 
-  const display = value.length > truncate ? `${value.slice(0, truncate)}...` : value;
+  const display =
+    value.length <= truncate
+      ? value
+      : align === "end"
+        ? `...${value.slice(-truncate)}`
+        : `${value.slice(0, truncate)}...`;
 
   return (
     <span

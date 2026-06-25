@@ -52,7 +52,7 @@ export default async function EnvioDetailPage({ params }: Props) {
           </div>
           <div className="flex justify-between">
             <span className="text-gray-400">Pedido</span>
-            <CopyableId value={envio.pedido_id} prefix="#" truncate={12} />
+            <CopyableId value={envio.pedido_id} prefix="#" truncate={12} align="end" />
           </div>
           <div className="flex justify-between">
             <span className="text-gray-400">Estado</span>
@@ -75,11 +75,15 @@ export default async function EnvioDetailPage({ params }: Props) {
             <span className="text-white">${envio.monto.toLocaleString()}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-400">Entrega estimada</span>
+            <span className="text-gray-400">
+              {envio.estado === "ENTREGADO" ? "Entregado el" : "Entrega estimada"}
+            </span>
             <span className="text-white">
-              {envio.fecha_de_entrega
+              {envio.estado === "ENTREGADO" && envio.fecha_de_entrega
                 ? new Date(envio.fecha_de_entrega).toLocaleDateString()
-                : "-"}
+                : envio.fecha_estimada
+                  ? new Date(envio.fecha_estimada).toLocaleDateString()
+                  : "-"}
             </span>
           </div>
           <div className="flex justify-between">

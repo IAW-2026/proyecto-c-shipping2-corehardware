@@ -42,7 +42,7 @@ export default async function DashboardPage() {
 
   const envios = await prisma.envio.findMany({
     where: { operador_id: operador.id },
-    orderBy: { fecha_de_entrega: "asc" },
+    orderBy: { fecha_estimada: "asc" },
   });
 
   return (
@@ -84,7 +84,7 @@ export default async function DashboardPage() {
                       {envio.id.slice(0, 8)}...
                     </Link>
                   </td>
-                  <td className="px-6 py-4"><CopyableId value={envio.pedido_id} prefix="#" /></td>
+                  <td className="px-6 py-4"><CopyableId value={envio.pedido_id} prefix="#" align="end" /></td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                       envio.estado === "ENTREGADO" ? "bg-green-900 text-green-400" :
@@ -98,9 +98,11 @@ export default async function DashboardPage() {
                   </td>
                   <td className="px-6 py-4">{envio.direccion}</td>
                   <td className="px-6 py-4">
-                    {envio.fecha_de_entrega
+                    {envio.estado === "ENTREGADO" && envio.fecha_de_entrega
                       ? new Date(envio.fecha_de_entrega).toLocaleDateString()
-                      : "-"}
+                      : envio.fecha_estimada
+                        ? new Date(envio.fecha_estimada).toLocaleDateString()
+                        : "-"}
                   </td>
                 </tr>
               ))}

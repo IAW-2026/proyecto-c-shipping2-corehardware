@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { requireOperador } from "@/lib/auth";
 import { actualizarEstadoPedido } from "@/lib/clients/buyer";
+import { calcularFechaEstimada } from "@/lib/estimacion";
 
 const TRANSICIONES: Record<string, string[]> = {
   PENDIENTE: ["ASIGNADO"],
@@ -70,9 +71,11 @@ export async function PUT(
     }
   }
 
-  const data: { estado: string; fecha_de_entrega?: Date } = { estado };
+  const data: { estado: string; fecha_de_entrega?: Date; fecha_estimada?: Date | null } = { estado };
   if (estado === "ENTREGADO" && !envio.fecha_de_entrega) {
     data.fecha_de_entrega = new Date();
+  } else {
+    data.fecha_estimada = calcularFechaEstimada(estado);
   }
 
   const actualizado = await prisma.envio.update({ where: { id }, data });

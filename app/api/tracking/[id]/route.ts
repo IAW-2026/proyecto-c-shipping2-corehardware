@@ -24,6 +24,7 @@ export async function GET(
     estado: envio.estado,
     direccion: envio.direccion,
     monto: envio.monto,
+    fecha_estimada: envio.fecha_estimada,
     fecha_de_entrega: envio.fecha_de_entrega,
   });
 }

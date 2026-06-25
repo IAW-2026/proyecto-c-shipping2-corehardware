@@ -19,6 +19,7 @@ interface Envio {
   estado: string;
   direccion: string;
   monto: number;
+  fecha_estimada: string | null;
   fecha_de_entrega: string | null;
 }
 
@@ -122,16 +123,20 @@ export default function TrackingSearch() {
               <p className="text-white">${envio.monto.toLocaleString()}</p>
             </div>
             <div>
-              <p className="text-gray-400 text-sm">Fecha estimada</p>
+              <p className="text-gray-400 text-sm">
+                {envio.estado === "ENTREGADO" ? "Entregado el" : "Fecha estimada"}
+              </p>
               <p className="text-white">
-                {envio.fecha_de_entrega
+                {envio.estado === "ENTREGADO" && envio.fecha_de_entrega
                   ? new Date(envio.fecha_de_entrega).toLocaleDateString()
-                  : "-"}
+                  : envio.fecha_estimada
+                    ? new Date(envio.fecha_estimada).toLocaleDateString()
+                    : "-"}
               </p>
             </div>
             <div>
               <p className="text-gray-400 text-sm">Pedido</p>
-              <CopyableId value={envio.pedido_id} prefix="#" truncate={12} className="text-white" />
+              <CopyableId value={envio.pedido_id} prefix="#" truncate={12} align="end" className="text-white" />
             </div>
           </div>
         </div>
