@@ -6,10 +6,24 @@ import CopyableId from "@/components/CopyableId";
 
 export const dynamic = "force-dynamic";
 
+function getRole(sessionClaims: unknown): string | undefined {
+  const claims = sessionClaims as Record<string, unknown> | null | undefined;
+  if (!claims) return undefined;
+  const meta =
+    (claims.metadata as Record<string, unknown> | undefined) ??
+    (claims.publicMetadata as Record<string, unknown> | undefined);
+  return meta?.role as string | undefined;
+}
+
 export default async function DashboardPage() {
-  const { userId } = await auth();
+  const { userId, sessionClaims } = await auth();
 
   if (!userId) redirect("/");
+
+  // Si el usuario es admin (no operador), lo mandamos a su panel correspondiente.
+  if (getRole(sessionClaims) === "admin") {
+    redirect("/admin/envios");
+  }
 
   const operador = await prisma.operador.findUnique({
     where: { clerk_user_id: userId },
