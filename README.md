@@ -82,8 +82,8 @@ A partir del feedback de la defensa se reforzó la seguridad aplicando el princi
 | `/api/admin/operadores/[id]` | PATCH | `requireAdmin` |
 | `/api/admin/envios/[id]` | PATCH | `requireAdmin` |
 | `/api/dashboard/envios/[id]/estado` | PUT | `requireOperador` + ownership check |
-| `/api/shipping/shipments` | POST | API Key (`X-API-Key`) — inter-servicio |
-| `/api/shipping/shipments/[id]` | GET | API Key (`X-API-Key`) — inter-servicio |
+| `/api/shipment` | POST | API Key (`X-API-Key`) — inter-servicio |
+| `/api/shipment/[id]` | GET | API Key (`X-API-Key`) — inter-servicio |
 | `/api/webhooks/clerk` | POST | Firma `svix` |
 | `/api/tracking/[id]` | GET | Público (sin auth, solo expone campos seguros) |
 
