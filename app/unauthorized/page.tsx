@@ -1,6 +1,29 @@
 import Link from "next/link";
+import { auth } from "@clerk/nextjs/server";
 
-export default function UnauthorizedPage() {
+export const dynamic = "force-dynamic";
+
+function getRole(sessionClaims: unknown): string | undefined {
+  const claims = sessionClaims as Record<string, unknown> | null | undefined;
+  if (!claims) return undefined;
+  const meta =
+    (claims.metadata as Record<string, unknown> | undefined) ??
+    (claims.publicMetadata as Record<string, unknown> | undefined);
+  return meta?.role as string | undefined;
+}
+
+export default async function UnauthorizedPage() {
+  const { sessionClaims } = await auth();
+  const role = getRole(sessionClaims);
+
+  // Decide a dónde mandar al usuario según su rol.
+  const panelHref =
+    role === "admin"
+      ? "/admin/envios"
+      : role === "logistics"
+        ? "/dashboard"
+        : null;
+
   return (
     <main className="min-h-screen bg-gray-950 flex flex-col items-center justify-center p-8 text-center">
       <h1 className="text-8xl font-bold text-yellow-400 mb-4">403</h1>
@@ -11,12 +34,14 @@ export default function UnauthorizedPage() {
         No tenés permisos para acceder a esta sección.
       </p>
       <div className="flex gap-4">
-        <Link
-          href="/dashboard"
-          className="bg-cyan-500 hover:bg-cyan-400 text-gray-950 px-6 py-3 rounded-lg font-semibold transition"
-        >
-          Volver al panel
-        </Link>
+        {panelHref && (
+          <Link
+            href={panelHref}
+            className="bg-cyan-500 hover:bg-cyan-400 text-gray-950 px-6 py-3 rounded-lg font-semibold transition"
+          >
+            Volver a mi panel
+          </Link>
+        )}
         <Link
           href="/"
           className="bg-gray-700 hover:bg-gray-600 text-white px-6 py-3 rounded-lg font-semibold transition"

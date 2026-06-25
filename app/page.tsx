@@ -11,7 +11,7 @@ export default function HomePage() {
               href="/dashboard"
               className="text-sm text-gray-400 hover:text-cyan-400 transition"
             >
-              Acceso operadores →
+              Iniciar sesión →
             </Link>
           </div>
           <div className="flex items-center justify-center gap-3 mb-3">
