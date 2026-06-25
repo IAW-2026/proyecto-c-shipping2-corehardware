@@ -26,7 +26,7 @@ model Operador {
 
 model Envio {
   id                String   @id @default(uuid())
-  pedido_id         String
+  pedido_id         String   @unique
   operador_id       String?
   operador          Operador? @relation(fields: [operador_id], references: [id])
   fecha_de_entrega  DateTime?

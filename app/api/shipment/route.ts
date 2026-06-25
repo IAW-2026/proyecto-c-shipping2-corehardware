@@ -22,17 +22,37 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  const existente = await prisma.envio.findUnique({ where: { pedido_id: id } });
+  if (existente) {
+    return NextResponse.json(
+      { message: "Ya existe un envío para este pedido" },
+      { status: 409 }
+    );
+  }
+
   // La doc de Seller no manda la dirección de entrega; la obtenemos de Buyer.
   const comprador = await getComprador(comprador_id);
 
-  const envio = await prisma.envio.create({
-    data: {
-      pedido_id: id,
-      estado: "PENDIENTE",
-      direccion: comprador?.direccion ?? "",
-      monto,
-    },
-  });
+  let envio;
+  try {
+    envio = await prisma.envio.create({
+      data: {
+        pedido_id: id,
+        estado: "PENDIENTE",
+        direccion: comprador?.direccion ?? "",
+        monto,
+      },
+    });
+  } catch (err) {
+    // Carrera entre dos requests simultáneos para el mismo pedido: el unique constraint frena al segundo.
+    if (err instanceof Error && "code" in err && err.code === "P2002") {
+      return NextResponse.json(
+        { message: "Ya existe un envío para este pedido" },
+        { status: 409 }
+      );
+    }
+    throw err;
+  }
 
   // Notificar a Buyer del shipmentID. Si falla, el envío ya está creado:
   // queda log de error para reintento manual; no rompemos la transacción.
