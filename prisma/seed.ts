@@ -39,7 +39,7 @@ async function main() {
         estado: "PENDIENTE",
         direccion: "Av. Alem 890, Bahía Blanca",
         monto: 5600,
-        fecha_de_entrega: new Date("2026-06-30"),
+        fecha_estimada: new Date("2026-06-30"),
       },
       {
         pedido_id: "cl_demo_pedido_pend_002",
@@ -47,7 +47,7 @@ async function main() {
         estado: "PENDIENTE",
         direccion: "Darregueira 789, Bahía Blanca",
         monto: 7800,
-        fecha_de_entrega: new Date("2026-07-01"),
+        fecha_estimada: new Date("2026-07-01"),
       },
 
       // 1 ASIGNADO a Carlos
@@ -57,7 +57,7 @@ async function main() {
         estado: "ASIGNADO",
         direccion: "Chiclana 456, Bahía Blanca",
         monto: 22000,
-        fecha_de_entrega: new Date("2026-06-28"),
+        fecha_estimada: new Date("2026-06-28"),
       },
 
       // 1 RETIRADO por Carlos
@@ -67,7 +67,7 @@ async function main() {
         estado: "RETIRADO",
         direccion: "Av. Fortín 321, Bahía Blanca",
         monto: 31000,
-        fecha_de_entrega: new Date("2026-06-26"),
+        fecha_estimada: new Date("2026-06-26"),
       },
 
       // 1 EN_CAMINO con Carlos
@@ -77,16 +77,18 @@ async function main() {
         estado: "EN_CAMINO",
         direccion: "Av. Cerri 234, Bahía Blanca",
         monto: 8900,
-        fecha_de_entrega: new Date("2026-06-25"),
+        fecha_estimada: new Date("2026-06-25"),
       },
 
-      // 2 ENTREGADO por Carlos (historial)
+      // 2 ENTREGADO por Carlos (historial) — uno a tiempo, uno tarde, para que
+      // el gráfico de cumplimiento de SLA en Analytics tenga ambos casos.
       {
         pedido_id: "cl_demo_pedido_entreg_001",
         operador_id: carlos.id,
         estado: "ENTREGADO",
         direccion: "Av. Alem 890, Bahía Blanca",
         monto: 15500,
+        fecha_estimada: new Date("2026-06-16"),
         fecha_de_entrega: new Date("2026-06-15"),
       },
       {
@@ -95,6 +97,7 @@ async function main() {
         estado: "ENTREGADO",
         direccion: "Av. Colón 321, Bahía Blanca",
         monto: 45000,
+        fecha_estimada: new Date("2026-06-08"),
         fecha_de_entrega: new Date("2026-06-10"),
       },
     ],
