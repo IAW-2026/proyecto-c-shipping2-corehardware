@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-// Endpoint dedicado para el Control Plane.
+// Endpoint dedicado al Analytics Dashboard.
 // Autenticación: X-API-Key === SHIPPING_API_KEY.
 // Retorna listado de envíos con datos del operador asignado.
 export async function GET(req: NextRequest) {
@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
 
   const envios = await prisma.envio.findMany({
     take: 200,
-    orderBy: { fecha_de_entrega: "desc" },
+    orderBy: { fecha_estimada: "asc" },
     include: {
       operador: {
         select: { id: true, nombre: true, apellido: true, mail: true },
@@ -29,6 +29,7 @@ export async function GET(req: NextRequest) {
       estado: e.estado,
       direccion: e.direccion,
       monto: e.monto,
+      fecha_estimada: e.fecha_estimada,
       fecha_de_entrega: e.fecha_de_entrega,
       operador: e.operador
         ? {
