@@ -70,7 +70,7 @@ export default async function DashboardPage() {
                 <th className="px-6 py-3">Pedido</th>
                 <th className="px-6 py-3">Estado</th>
                 <th className="px-6 py-3">Dirección</th>
-                <th className="px-6 py-3">Entrega estimada</th>
+                <th className="px-6 py-3">Entrega</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-800">
@@ -98,11 +98,22 @@ export default async function DashboardPage() {
                   </td>
                   <td className="px-6 py-4">{envio.direccion}</td>
                   <td className="px-6 py-4">
-                    {envio.estado === "ENTREGADO" && envio.fecha_de_entrega
-                      ? new Date(envio.fecha_de_entrega).toLocaleDateString("es-AR")
-                      : envio.fecha_estimada
-                        ? new Date(envio.fecha_estimada).toLocaleDateString("es-AR")
-                        : "-"}
+                    <div className="flex items-center gap-2">
+                      {envio.estado === "ENTREGADO" && envio.fecha_de_entrega
+                        ? new Date(envio.fecha_de_entrega).toLocaleDateString("es-AR")
+                        : envio.fecha_estimada
+                          ? new Date(envio.fecha_estimada).toLocaleDateString("es-AR")
+                          : "-"}
+                      {envio.estado === "ENTREGADO" && envio.fecha_de_entrega && envio.fecha_estimada && (
+                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                          envio.fecha_de_entrega.getTime() <= envio.fecha_estimada.getTime()
+                            ? "bg-green-900 text-green-400"
+                            : "bg-red-900 text-red-400"
+                        }`}>
+                          {envio.fecha_de_entrega.getTime() <= envio.fecha_estimada.getTime() ? "A tiempo" : "Tardío"}
+                        </span>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
