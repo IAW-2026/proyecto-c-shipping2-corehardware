@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 interface Props {
   envioId: string;
@@ -11,6 +12,7 @@ export default function ActualizarEstado({ envioId, estadoActual }: Props) {
   const [estado, setEstado] = useState(estadoActual);
   const [loading, setLoading] = useState(false);
   const [mensaje, setMensaje] = useState("");
+  const router = useRouter();
 
   async function handleActualizar() {
     setLoading(true);
@@ -24,6 +26,7 @@ export default function ActualizarEstado({ envioId, estadoActual }: Props) {
 
     if (res.ok) {
       setMensaje("✅ Estado actualizado correctamente");
+      router.refresh();
     } else {
       setMensaje("❌ Error al actualizar el estado");
     }
