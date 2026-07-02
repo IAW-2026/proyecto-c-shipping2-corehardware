@@ -126,12 +126,21 @@ export default function TrackingSearch() {
               <p className="text-gray-400 text-sm">
                 {envio.estado === "ENTREGADO" ? "Entregado el" : "Fecha estimada"}
               </p>
-              <p className="text-white">
+              <p className="text-white flex items-center gap-2">
                 {envio.estado === "ENTREGADO" && envio.fecha_de_entrega
                   ? new Date(envio.fecha_de_entrega).toLocaleDateString("es-AR")
                   : envio.fecha_estimada
                     ? new Date(envio.fecha_estimada).toLocaleDateString("es-AR")
                     : "-"}
+                {envio.estado === "ENTREGADO" && envio.fecha_de_entrega && envio.fecha_estimada && (
+                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                    new Date(envio.fecha_de_entrega).getTime() <= new Date(envio.fecha_estimada).getTime()
+                      ? "bg-green-900 text-green-400"
+                      : "bg-red-900 text-red-400"
+                  }`}>
+                    {new Date(envio.fecha_de_entrega).getTime() <= new Date(envio.fecha_estimada).getTime() ? "A tiempo" : "Tardío"}
+                  </span>
+                )}
               </p>
             </div>
             <div>

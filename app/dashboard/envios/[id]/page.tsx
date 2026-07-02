@@ -78,12 +78,21 @@ export default async function EnvioDetailPage({ params }: Props) {
             <span className="text-gray-400">
               {envio.estado === "ENTREGADO" ? "Entregado el" : "Entrega estimada"}
             </span>
-            <span className="text-white">
+            <span className="text-white flex items-center gap-2">
               {envio.estado === "ENTREGADO" && envio.fecha_de_entrega
                 ? new Date(envio.fecha_de_entrega).toLocaleDateString("es-AR")
                 : envio.fecha_estimada
                   ? new Date(envio.fecha_estimada).toLocaleDateString("es-AR")
                   : "-"}
+              {envio.estado === "ENTREGADO" && envio.fecha_de_entrega && envio.fecha_estimada && (
+                <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
+                  envio.fecha_de_entrega.getTime() <= envio.fecha_estimada.getTime()
+                    ? "bg-green-900 text-green-400"
+                    : "bg-red-900 text-red-400"
+                }`}>
+                  {envio.fecha_de_entrega.getTime() <= envio.fecha_estimada.getTime() ? "A tiempo" : "Tardío"}
+                </span>
+              )}
             </span>
           </div>
           <div className="flex justify-between">
