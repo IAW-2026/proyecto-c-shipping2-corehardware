@@ -99,9 +99,9 @@ export default async function DashboardPage() {
                   <td className="px-6 py-4">{envio.direccion}</td>
                   <td className="px-6 py-4">
                     {envio.estado === "ENTREGADO" && envio.fecha_de_entrega
-                      ? new Date(envio.fecha_de_entrega).toLocaleDateString()
+                      ? new Date(envio.fecha_de_entrega).toLocaleDateString("es-AR")
                       : envio.fecha_estimada
-                        ? new Date(envio.fecha_estimada).toLocaleDateString()
+                        ? new Date(envio.fecha_estimada).toLocaleDateString("es-AR")
                         : "-"}
                   </td>
                 </tr>

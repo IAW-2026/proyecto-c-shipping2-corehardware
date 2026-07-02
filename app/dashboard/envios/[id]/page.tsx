@@ -80,9 +80,9 @@ export default async function EnvioDetailPage({ params }: Props) {
             </span>
             <span className="text-white">
               {envio.estado === "ENTREGADO" && envio.fecha_de_entrega
-                ? new Date(envio.fecha_de_entrega).toLocaleDateString()
+                ? new Date(envio.fecha_de_entrega).toLocaleDateString("es-AR")
                 : envio.fecha_estimada
-                  ? new Date(envio.fecha_estimada).toLocaleDateString()
+                  ? new Date(envio.fecha_estimada).toLocaleDateString("es-AR")
                   : "-"}
             </span>
           </div>
