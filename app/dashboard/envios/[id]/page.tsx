@@ -95,6 +95,14 @@ export default async function EnvioDetailPage({ params }: Props) {
               )}
             </span>
           </div>
+          {envio.estado === "ENTREGADO" && envio.fecha_estimada && (
+            <div className="flex justify-between">
+              <span className="text-gray-400">Estimaba</span>
+              <span className="text-gray-400">
+                {new Date(envio.fecha_estimada).toLocaleDateString("es-AR")}
+              </span>
+            </div>
+          )}
           <div className="flex justify-between">
             <span className="text-gray-400">Operador</span>
             <span className="text-white">

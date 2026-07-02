@@ -142,6 +142,11 @@ export default function TrackingSearch() {
                   </span>
                 )}
               </p>
+              {envio.estado === "ENTREGADO" && envio.fecha_estimada && (
+                <p className="text-gray-500 text-xs mt-1">
+                  Estimaba: {new Date(envio.fecha_estimada).toLocaleDateString("es-AR")}
+                </p>
+              )}
             </div>
             <div>
               <p className="text-gray-400 text-sm">Pedido</p>

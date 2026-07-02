@@ -140,7 +140,14 @@ export default async function AdminEnviosPage({ searchParams }: Props) {
                     {envio.operador ? `${envio.operador.nombre} ${envio.operador.apellido}` : "Sin asignar"}
                   </td>
                   <td className="px-6 py-4">
-                    <div className="flex items-center gap-2">
+                    <div
+                      className="flex items-center gap-2"
+                      title={
+                        envio.estado === "ENTREGADO" && envio.fecha_estimada
+                          ? `Estimaba: ${new Date(envio.fecha_estimada).toLocaleDateString("es-AR")}`
+                          : undefined
+                      }
+                    >
                       {envio.estado === "ENTREGADO" && envio.fecha_de_entrega
                         ? new Date(envio.fecha_de_entrega).toLocaleDateString("es-AR")
                         : envio.fecha_estimada
