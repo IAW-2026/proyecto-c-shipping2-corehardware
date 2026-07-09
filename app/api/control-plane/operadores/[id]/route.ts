@@ -1,16 +1,18 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 
 export const dynamic = "force-dynamic";
 
-// PATCH /api/control-plane/operadores/{id}
-// Body: { is_deleted: boolean }
-// Activa o desactiva (soft delete) un operador.
-//
-// Al DESACTIVAR, libera todos sus envíos que no estén ENTREGADO:
-//   - operador_id → null
-//   - estado → PENDIENTE
-// Los envíos ENTREGADO quedan intactos (preserva historial de quién entregó qué).
+const patchOperadorSchema = z.object({
+  nombre: z.string().optional(),
+  apellido: z.string().optional(),
+  sexo: z.string().optional(),
+  direccion: z.string().optional(),
+  mail: z.string().email({ message: "El correo electrónico debe ser válido" }).optional(),
+  celular: z.string().optional(),
+}).strict();
+
 export async function PATCH(
   req: NextRequest,
   context: { params: Promise<{ id: string }> }
@@ -22,49 +24,36 @@ export async function PATCH(
   const { id } = await context.params;
   const body = await req.json();
 
-  if (typeof body.is_deleted !== "boolean") {
+  const validatedData = patchOperadorSchema.safeParse(body);
+  if (!validatedData.success) {
     return NextResponse.json(
-      { message: "Campo 'is_deleted' requerido (boolean)" },
+      {
+        message: "Datos de entrada inválidos. No se pudo actualizar el operador.",
+        errors: validatedData.error.flatten().fieldErrors,
+      },
       { status: 400 }
     );
   }
 
-  const operador = await prisma.operador.findUnique({ where: { id } });
+  const operador = await prisma.operador.findUnique({ where: { id, is_deleted: false } });
   if (!operador) {
     return NextResponse.json({ message: "Operador no encontrado" }, { status: 404 });
   }
 
-  // Transacción: actualiza el operador y libera sus envíos pendientes/en curso
-  // si se desactiva. Si se reactiva, no toca envíos.
-  const [actualizado, envios_liberados] = await prisma.$transaction(async (tx) => {
-    const op = await tx.operador.update({
-      where: { id },
-      data: { is_deleted: body.is_deleted },
-    });
-
-    let liberados = 0;
-    if (body.is_deleted) {
-      const result = await tx.envio.updateMany({
-        where: {
-          operador_id: id,
-          estado: { not: "ENTREGADO" },
-        },
-        data: {
-          operador_id: null,
-          estado: "PENDIENTE",
-        },
-      });
-      liberados = result.count;
-    }
-
-    return [op, liberados];
+  const actualizado = await prisma.operador.update({
+    where: { id, is_deleted: false },
+    data: validatedData.data,
   });
 
   return NextResponse.json({
     id: actualizado.id,
     nombre: actualizado.nombre,
     apellido: actualizado.apellido,
-    is_deleted: actualizado.is_deleted,
-    envios_liberados,
+    sexo: actualizado.sexo,
+    direccion: actualizado.direccion,
+    mail: actualizado.mail,
+    celular: actualizado.celular,
+    dni: actualizado.dni,
+    cuil_cuit: actualizado.cuil_cuit,
   });
 }
