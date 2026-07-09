@@ -31,7 +31,7 @@ function validatePatchOperador(body: unknown): {
 
   // Campos desconocidos (equivalente a .strict())
   const unknownFields = Object.keys(input).filter(
-    (key) => !ALLOWED_FIELDS.includes(key as any)
+    (key) => !ALLOWED_FIELDS.includes(key as (typeof ALLOWED_FIELDS)[number])
   );
   if (unknownFields.length > 0) {
     errors._root = [`Campos no permitidos: ${unknownFields.join(", ")}`];
