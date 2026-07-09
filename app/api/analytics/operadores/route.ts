@@ -3,47 +3,59 @@ import { NextRequest, NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-// Endpoint dedicado para el Control Plane.
-// Autenticación: X-API-Key === SHIPPING_API_KEY.
-// Retorna listado de operadores. Incluye los soft-deleted: el Control Plane
-// decide si mostrarlos o no según su filtro.
-//
-// Para cada operador devuelve dos contadores:
-//   - total_envios: todos los envíos asignados (cualquier estado)
-//   - envios_activos: envíos no entregados (PENDIENTE..EN_CAMINO)
 export async function GET(req: NextRequest) {
   if (req.headers.get("X-API-Key") !== process.env.SHIPPING_API_KEY) {
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
-  const operadores = await prisma.operador.findMany({
-    take: 200,
-    orderBy: { apellido: "asc" },
-    select: {
-      id: true,
-      clerk_user_id: true,
-      nombre: true,
-      apellido: true,
-      mail: true,
-      celular: true,
-      dni: true,
-      is_deleted: true,
-      envios: { select: { id: true, estado: true } },
-    },
-  });
+  const { searchParams } = new URL(req.url);
+  const q = searchParams.get("q") ?? undefined;
+  const offsetParam = searchParams.get("offset");
+  const limitParam = searchParams.get("limit");
+
+  const offset = offsetParam !== null && !Number.isNaN(Number(offsetParam)) ? Number(offsetParam) : 0;
+  const limit = limitParam !== null && !Number.isNaN(Number(limitParam)) ? Number(limitParam) : undefined;
+
+  const where = {
+    is_deleted: false,
+    ...(q ? { id: { contains: q, mode: "insensitive" as const } } : {}),
+  };
+
+  const [operadores, total] = await Promise.all([
+    prisma.operador.findMany({
+      where,
+      orderBy: { apellido: "asc" },
+      skip: offset,
+      ...(limit !== undefined ? { take: limit } : {}),
+      select: {
+        id: true,
+        nombre: true,
+        apellido: true,
+        sexo: true,
+        direccion: true,
+        mail: true,
+        celular: true,
+        dni: true,
+        cuil_cuit: true,
+      },
+    }),
+    prisma.operador.count({ where }),
+  ]);
 
   return NextResponse.json({
-    total: operadores.length,
-    items: operadores.map((op) => ({
+    operadores: operadores.map((op) => ({
       id: op.id,
       nombre: op.nombre,
       apellido: op.apellido,
+      sexo: op.sexo,
+      direccion: op.direccion,
       mail: op.mail,
       celular: op.celular,
       dni: op.dni,
-      is_deleted: op.is_deleted,
-      total_envios: op.envios.length,
-      envios_activos: op.envios.filter((e) => e.estado !== "ENTREGADO").length,
+      cuil_cuit: op.cuil_cuit,
     })),
+    total,
+    offset,
+    limit: limit ?? total,
   });
 }
