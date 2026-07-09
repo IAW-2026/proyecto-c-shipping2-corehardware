@@ -1,17 +1,67 @@
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 
 export const dynamic = "force-dynamic";
 
-const patchOperadorSchema = z.object({
-  nombre: z.string().optional(),
-  apellido: z.string().optional(),
-  sexo: z.string().optional(),
-  direccion: z.string().optional(),
-  mail: z.string().email({ message: "El correo electrónico debe ser válido" }).optional(),
-  celular: z.string().optional(),
-}).strict();
+const ALLOWED_FIELDS = [
+  "nombre",
+  "apellido",
+  "sexo",
+  "direccion",
+  "mail",
+  "celular",
+] as const;
+
+type PatchOperadorData = Partial<Record<(typeof ALLOWED_FIELDS)[number], string>>;
+
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function validatePatchOperador(body: unknown): {
+  success: true; data: PatchOperadorData
+} | {
+  success: false; errors: Record<string, string[]>
+} {
+  const errors: Record<string, string[]> = {};
+
+  if (typeof body !== "object" || body === null || Array.isArray(body)) {
+    return { success: false, errors: { _root: ["El cuerpo debe ser un objeto"] } };
+  }
+
+  const input = body as Record<string, unknown>;
+
+  // Campos desconocidos (equivalente a .strict())
+  const unknownFields = Object.keys(input).filter(
+    (key) => !ALLOWED_FIELDS.includes(key as any)
+  );
+  if (unknownFields.length > 0) {
+    errors._root = [`Campos no permitidos: ${unknownFields.join(", ")}`];
+  }
+
+  const data: PatchOperadorData = {};
+
+  for (const field of ALLOWED_FIELDS) {
+    if (input[field] === undefined) continue;
+
+    const value = input[field];
+    if (typeof value !== "string") {
+      errors[field] = [`${field} debe ser un texto`];
+      continue;
+    }
+
+    if (field === "mail" && !EMAIL_REGEX.test(value)) {
+      errors[field] = ["El correo electrónico debe ser válido"];
+      continue;
+    }
+
+    data[field] = value;
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return { success: false, errors };
+  }
+
+  return { success: true, data };
+}
 
 export async function PATCH(
   req: NextRequest,
@@ -24,12 +74,12 @@ export async function PATCH(
   const { id } = await context.params;
   const body = await req.json();
 
-  const validatedData = patchOperadorSchema.safeParse(body);
+  const validatedData = validatePatchOperador(body);
   if (!validatedData.success) {
     return NextResponse.json(
       {
         message: "Datos de entrada inválidos. No se pudo actualizar el operador.",
-        errors: validatedData.error.flatten().fieldErrors,
+        errors: validatedData.errors,
       },
       { status: 400 }
     );
