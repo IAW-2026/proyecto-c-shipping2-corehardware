@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getPedido, getComprador } from "@/lib/clients/buyer";
 import { getVendedor } from "@/lib/clients/seller";
 import CopyableId from "@/components/CopyableId";
+import EstadosProgreso from "@/components/EstadosProgreso";
 
 export const dynamic = "force-dynamic";
 
@@ -41,6 +42,13 @@ export default async function EnvioDetailPage({ params }: Props) {
           ← Volver a mis envíos
         </Link>
         <h1 className="text-3xl font-bold text-white mt-2">Detalle del Envío</h1>
+      </div>
+
+      <div className="bg-gray-900 rounded-xl border border-gray-800 p-6 mb-6">
+        <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-4">
+          Progreso del envío
+        </h2>
+        <EstadosProgreso estadoActual={envio.estado} />
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
