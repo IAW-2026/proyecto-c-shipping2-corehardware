@@ -42,7 +42,7 @@ export default async function DashboardPage() {
 
   const envios = await prisma.envio.findMany({
     where: { operador_id: operador.id },
-    orderBy: { fecha_estimada: "asc" },
+    orderBy: { created_at: "desc" },
   });
 
   return (

@@ -30,7 +30,7 @@ export default async function AdminEnviosPage({ searchParams }: Props) {
     prisma.envio.findMany({
       where,
       include: { operador: true },
-      orderBy: { fecha_estimada: "asc" },
+      orderBy: { created_at: "desc" },
       skip,
       take: POR_PAGINA,
     }),

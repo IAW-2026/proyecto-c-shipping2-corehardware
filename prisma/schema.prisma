@@ -29,6 +29,7 @@ model Envio {
   pedido_id         String   @unique
   operador_id       String?
   operador          Operador? @relation(fields: [operador_id], references: [id])
+  created_at        DateTime @default(now())
   fecha_estimada    DateTime?
   fecha_de_entrega  DateTime?
   estado            String   @default("PENDIENTE")
