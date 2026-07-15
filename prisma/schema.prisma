@@ -21,6 +21,7 @@ model Operador {
   fecha_nacimiento DateTime
   nacionalidad     String
   is_deleted       Boolean  @default(false)
+  created_at       DateTime @default(now())
   envios           Envio[]
 }
 
