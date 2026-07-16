@@ -28,6 +28,7 @@ export async function GET(req: NextRequest) {
       celular: true,
       dni: true,
       is_deleted: true,
+      created_at: true,
       envios: { select: { id: true, estado: true } },
     },
   });
@@ -42,6 +43,7 @@ export async function GET(req: NextRequest) {
       celular: op.celular,
       dni: op.dni,
       is_deleted: op.is_deleted,
+      fecha_alta: op.created_at.toISOString(),
       total_envios: op.envios.length,
       envios_activos: op.envios.filter((e) => e.estado !== "ENTREGADO").length,
     })),
